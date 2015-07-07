@@ -18,8 +18,7 @@ window.onload = function init()
                     0,0,1,
                     1,0,0,
                     0,1,0,
-                    0,0,1
-                    ];
+                    0,0,1];
 
     //  Configure WebGL
 
@@ -27,7 +26,6 @@ window.onload = function init()
     gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
 
     //  Load shaders and initialize attribute buffers
-
     var program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
 
@@ -35,7 +33,6 @@ window.onload = function init()
     var bufferId = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
     gl.bufferData( gl.ARRAY_BUFFER, flatten(vertices), gl.STATIC_DRAW );
-
 
 
     // Associate out shader variables with our data buffer
