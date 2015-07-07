@@ -122,7 +122,7 @@ function subdivideTriangle(p1,p2,p3,n)
   var m31 = middleBetween(p3,p1);
   subdivideTriangle(m12,p2,m23,n-1);
   subdivideTriangle(p1,m12,m31,n-1);
-  //subdivideTriangle(m12,m23,m31,n-1);
+  subdivideTriangle(m12,m23,m31,n-1);
   subdivideTriangle(m31,m23,p3,n-1);
 };
 
