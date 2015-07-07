@@ -5,6 +5,9 @@ var numTriangles = 1;
 var vertices = [];
 var color = [];
 var maxSubdivisions = 5;
+var angle = 0.0;//1.54;
+var center = null;
+var triangleSize = 0.5;
 
 function distance(p1,p2)
 {
@@ -55,17 +58,30 @@ function getVectorFromTo(p1,p2)
 	return result;
 };
 
+function twist(p,center)
+{
+	var x = p[0];
+	var  y = p[1];
+	d = distance(p,center);
+	x = x*Math.cos(d*angle) - y*Math.sin(d*angle);
+	y = x*Math.sin(d*angle) + y*Math.cos(d*angle);
+	return [x,y];
+}
+
 function middleBetween(p1,p2)
 {
 	var result = [];
-	var vector = subtractArray(p2,p1);
+	var vector = sumArray(p2,p1);
 	vector = divideArray(vector,2);
 	result = sumArray(p1,vector);
-	return result;
+	return vector;
 };
 
 function addTriangle(p1,p2,p3)
 {
+	p1 = twist(p1,center);
+	p2 = twist(p2,center);
+	p3 = twist(p3,center);
     vertices = vertices.concat(p1);
     vertices = vertices.concat(p2);
     vertices = vertices.concat(p3);
@@ -73,9 +89,11 @@ function addTriangle(p1,p2,p3)
      color = color.concat([1,1,1]);
 };
 
-function subdivideTriangle(p1,p2,p3)
+function subdivideTriangle(p1,p2,p3,n)
 {
-  if(distance(p1,p2) <= 1.0/maxSubdivisions)
+  if(center == null)
+	center = middleBetween(middleBetween(p1,p2),middleBetween(p2,p3));
+  if(n ==  0)
   {
     addTriangle(p1,p2,p3);
     return;
@@ -83,10 +101,10 @@ function subdivideTriangle(p1,p2,p3)
   var m12 = middleBetween(p1,p2);
   var m23 = middleBetween(p2,p3);
   var m31 = middleBetween(p3,p1);
-  subdivideTriangle(m12,p2,m23);
-  subdivideTriangle(p1,m12,m31);
-  subdivideTriangle(m12,m23,m31);
-  subdivideTriangle(m31,m23,p3);
+  subdivideTriangle(m12,p2,m23,n-1);
+  subdivideTriangle(p1,m12,m31,n-1);
+  //subdivideTriangle(m12,m23,m31,n-1);
+  subdivideTriangle(m31,m23,p3,n-1);
 };
 
 window.onload = function init()
@@ -101,9 +119,9 @@ window.onload = function init()
     // colors   = [1,1,1,
     //                 1,1,1,
     //                 1,1,1];
-    subdivideTriangle([-1.0,-1.0],[0,1],[1.0,-1.0]);
+    subdivideTriangle([-triangleSize,-triangleSize],[0,triangleSize],[triangleSize,-triangleSize],maxSubdivisions);
     //  Configure WebGL
-	//  
+	//
 	console.log(vertices);
 
     gl.viewport( 0, 0, canvas.width, canvas.height );
@@ -137,6 +155,7 @@ window.onload = function init()
 
 
 function render() {
+	gl.viewport(0,0,512,512);
     gl.clear( gl.COLOR_BUFFER_BIT );
     gl.drawArrays( gl.TRIANGLES, 0, vertices.length/2);
     // gl.drawElements
