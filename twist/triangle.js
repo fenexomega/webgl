@@ -5,7 +5,6 @@ var programNbr;
 var numTriangles = 1;
 var vertices = [];
 var color = [];
-var maxSubdivisions = 5;
 var angle = 0.0;//1.54;
 var center = null;
 var triangleSize = 0.5;
