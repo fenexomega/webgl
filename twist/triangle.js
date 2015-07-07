@@ -6,9 +6,11 @@ var numTriangles = 1;
 var vertices = [];
 var color = [];
 var angle = 0.0;//1.54;
+var maxSubdivisions;
 var center = null;
 var triangleSize = 0.5;
 var canvas;
+var figure = 0;
 
 function distance(p1,p2)
 {
@@ -90,6 +92,12 @@ function addTriangle(p1,p2,p3)
 	 color = color.concat([1,1,1]);
 };
 
+function addSquare(p1,p2,p3,p4)
+{
+	addTriangle(p1,p2,p3);
+	addTriangle(p1,p3,p4);
+}
+
 function setCenter(c)
 {
 	var ucenter = gl.getUniformLocation(programNbr,"center"); 
@@ -118,6 +126,30 @@ function subdivideTriangle(p1,p2,p3,n)
   subdivideTriangle(m31,m23,p3,n-1);
 };
 
+
+function subdivideSquare(p1,p2,p3,p4,n)
+{
+
+  if(center == null)
+  {
+	center = middleBetween(middleBetween(p1,p2),middleBetween(p2,p3));
+	setCenter(center);
+  }
+  if(n ==  0)
+  {
+    addSquare(p1,p2,p3,p4);
+    return;
+  }
+  var a = middleBetween(p1,p2);
+  var b = middleBetween(p2,p3);
+  var c = middleBetween(p3,p4);
+  var d = middleBetween(p4,p1);
+  subdivideSquare(p1,a,center,d,n-1);
+  subdivideSquare(a,p2,b,center,n-1);
+  subdivideSquare(center,b,p3,c,n-1);
+  subdivideSquare(d,center,c,p4,n-1);
+};
+
 function setTwist(n)
 {
 	angle = n;
@@ -139,7 +171,11 @@ function renderTriangles(n)
 	vertices = [];
 	colors   = [];
 	maxSubdivisions = n;
-    subdivideTriangle([-triangleSize,-triangleSize],[0,triangleSize],[triangleSize,-triangleSize],n);
+	if(figure == 0)
+		subdivideTriangle([-triangleSize,-triangleSize],[0,triangleSize],[triangleSize,-triangleSize],n);
+	else
+		subdivideSquare([-triangleSize,-triangleSize],[-triangleSize,triangleSize],
+				[triangleSize,triangleSize],[triangleSize,-triangleSize],n);
     //  Configure WebGL
 	//
 	//console.log(vertices);
@@ -184,10 +220,14 @@ window.onload = function init()
 
 };
 
+function changeFigure(n)
+{
+	figure = n;
+	renderTriangles(maxSubdivisions);
+};
 
 function render() {
     gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
     gl.clear( gl.COLOR_BUFFER_BIT );
     gl.drawArrays( gl.TRIANGLES, 0, vertices.length/2);
-    // gl.drawElements
 }
