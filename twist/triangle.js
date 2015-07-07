@@ -8,6 +8,7 @@ var maxSubdivisions = 5;
 var angle = 0.0;//1.54;
 var center = null;
 var triangleSize = 0.5;
+var canvas;
 
 function distance(p1,p2)
 {
@@ -107,19 +108,25 @@ function subdivideTriangle(p1,p2,p3,n)
   subdivideTriangle(m31,m23,p3,n-1);
 };
 
-window.onload = function init()
+function setTwist(n)
 {
-    var canvas = document.getElementById( "gl-canvas" );
+	angle = n;
+	renderTriangles(maxSubdivisions);
+};
 
-    gl = WebGLUtils.setupWebGL( canvas );
-    if ( !gl ) { alert( "WebGL isn't available" ); }
-
+function renderTriangles(n)
+{
 
     // vertices = [-1, -1, 0, 1, 1, -1];
     // colors   = [1,1,1,
     //                 1,1,1,
+	//
+	//
     //                 1,1,1];
-    subdivideTriangle([-triangleSize,-triangleSize],[0,triangleSize],[triangleSize,-triangleSize],maxSubdivisions);
+	vertices = [];
+	colors   = [];
+	maxSubdivisions = n;
+    subdivideTriangle([-triangleSize,-triangleSize],[0,triangleSize],[triangleSize,-triangleSize],n);
     //  Configure WebGL
 	//
 	console.log(vertices);
@@ -153,9 +160,18 @@ window.onload = function init()
     render();
 };
 
+window.onload = function init()
+{
+    canvas = document.getElementById( "gl-canvas" );
+
+    gl = WebGLUtils.setupWebGL( canvas );
+    if ( !gl ) { alert( "WebGL isn't available" ); }
+	renderTriangles(0);
+
+};
+
 
 function render() {
-	gl.viewport(0,0,512,512);
     gl.clear( gl.COLOR_BUFFER_BIT );
     gl.drawArrays( gl.TRIANGLES, 0, vertices.length/2);
     // gl.drawElements
