@@ -1,6 +1,7 @@
 
 var gl;
 var points;
+var programNbr;
 var numTriangles = 1;
 var vertices = [];
 var color = [];
@@ -80,20 +81,30 @@ function middleBetween(p1,p2)
 
 function addTriangle(p1,p2,p3)
 {
-	p1 = twist(p1,center);
-	p2 = twist(p2,center);
-	p3 = twist(p3,center);
-    vertices = vertices.concat(p1);
-    vertices = vertices.concat(p2);
-    vertices = vertices.concat(p3);
-    for(i = 0; i < 3; ++i)
-     color = color.concat([1,1,1]);
+	// p1 = twist(p1,center);
+	// p2 = twist(p2,center);
+	// p3 = twist(p3,center);
+	vertices = vertices.concat(p1);
+	vertices = vertices.concat(p2);
+	vertices = vertices.concat(p3);
+	for(i = 0; i < 3; ++i)
+	 color = color.concat([1,1,1]);
 };
+
+function setCenter(c)
+{
+	var ucenter = gl.getUniformLocation(programNbr,"center"); 
+	gl.uniform2f(ucenter,c[0],c[1]);
+
+}
 
 function subdivideTriangle(p1,p2,p3,n)
 {
   if(center == null)
+  {
 	center = middleBetween(middleBetween(p1,p2),middleBetween(p2,p3));
+	setCenter(center);
+  }
   if(n ==  0)
   {
     addTriangle(p1,p2,p3);
@@ -111,7 +122,10 @@ function subdivideTriangle(p1,p2,p3,n)
 function setTwist(n)
 {
 	angle = n;
-	renderTriangles(maxSubdivisions);
+	// TODO send value to vertex shder uniform ANGLE
+	var uangle = gl.getUniformLocation(programNbr,"angle");
+	gl.uniform1f(uangle,n);
+	render();
 };
 
 function renderTriangles(n)
@@ -129,14 +143,10 @@ function renderTriangles(n)
     subdivideTriangle([-triangleSize,-triangleSize],[0,triangleSize],[triangleSize,-triangleSize],n);
     //  Configure WebGL
 	//
-	console.log(vertices);
+	//console.log(vertices);
 
     gl.viewport( 0, 0, canvas.width, canvas.height );
-    gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
 
-    //  Load shaders and initialize attribute buffers
-    var program = initShaders( gl, "vertex-shader", "fragment-shader" );
-    gl.useProgram( program );
 
     // Load the data into the GPU
     var bufferId = gl.createBuffer();
@@ -144,7 +154,7 @@ function renderTriangles(n)
     gl.bufferData( gl.ARRAY_BUFFER, flatten(vertices), gl.STATIC_DRAW );
 
     // Associate out shader variables with our data buffer
-    var vPosition = gl.getAttribLocation( program, "vPosition" );
+    var vPosition = gl.getAttribLocation( programNbr, "vPosition" );
     gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vPosition );
 
@@ -152,7 +162,7 @@ function renderTriangles(n)
     gl.bindBuffer( gl.ARRAY_BUFFER, colorBufferId );
     gl.bufferData( gl.ARRAY_BUFFER, flatten(color), gl.STATIC_DRAW );
 
-    var vColor = gl.getAttribLocation(program, "vColor");
+    var vColor = gl.getAttribLocation(programNbr, "vColor");
 
     gl.vertexAttribPointer(vColor,3,gl.FLOAT,false,0,0);
     gl.enableVertexAttribArray(vColor);
@@ -166,12 +176,18 @@ window.onload = function init()
 
     gl = WebGLUtils.setupWebGL( canvas );
     if ( !gl ) { alert( "WebGL isn't available" ); }
+    //  Load shaders and initialize attribute buffers
+    var program = initShaders( gl, "vertex-shader", "fragment-shader" );
+    gl.useProgram( program );
+	programNbr = program;
+
 	renderTriangles(0);
 
 };
 
 
 function render() {
+    gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
     gl.clear( gl.COLOR_BUFFER_BIT );
     gl.drawArrays( gl.TRIANGLES, 0, vertices.length/2);
     // gl.drawElements

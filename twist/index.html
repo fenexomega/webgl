@@ -4,13 +4,22 @@
 <script id="vertex-shader" type="x-shader/x-vertex">
 attribute vec2 vPosition;
 attribute vec3 vColor;
+uniform vec2 center;
+uniform float angle;
 
 varying vec3 outColor;
 
 void main()
 {
     outColor = vColor;
-    gl_Position = vec4(vPosition, 0.0, 1.0);
+	float d = distance(vPosition,center);
+	vec2 v = vPosition;
+	float c = cos(d*angle);
+	float s = sin(d*angle);
+
+	v.x = v.x*c - v.y*s;
+	v.y = v.x*s + v.y*c;
+    gl_Position = vec4(v, 0.0, 1.0);
 }
 </script>
 
@@ -37,7 +46,9 @@ void main()
 Oops ... your browser doesn't support the HTML5 canvas element
 </canvas>
 <p># Subdivisions</p>
-<input id="triangleSlider" type="range" value="0" step="1" max="6" align="left" oninput="renderTriangles(this.value)" >
+<div>
+0<input id="triangleSlider" type="range" value="0" step="1" max="6" align="left" oninput="renderTriangles(this.value)" >5
+</div>
 <br />
 
 <p>Twist Angle</p>

@@ -1,4 +1,11 @@
 p
 {
+	font-weight: bold;
 	color: #FFFFFF;
+}
+
+body 
+{
+	color: #FFF;
+	background-color: #000;
 }
