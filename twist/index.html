@@ -4,7 +4,6 @@
 <script id="vertex-shader" type="x-shader/x-vertex">
 attribute vec2 vPosition;
 attribute vec3 vColor;
-uniform vec2 center;
 uniform float angle;
 
 varying vec3 outColor;
@@ -12,7 +11,7 @@ varying vec3 outColor;
 void main()
 {
     outColor = vColor;
-	float d = distance(vPosition,center);
+	float d = sqrt(pow(vPosition.x,2) + pow(vPosition.y,2)); 
 	vec2 v = vPosition;
 	float c = cos(d*angle);
 	float s = sin(d*angle);

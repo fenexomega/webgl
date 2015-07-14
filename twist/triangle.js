@@ -108,11 +108,6 @@ function setCenter(c)
 
 function subdivideTriangle(p1,p2,p3,n)
 {
-  if(center == null)
-  {
-	center = middleBetween(middleBetween(p1,p2),middleBetween(p2,p3));
-	setCenter(center);
-  }
   if(n ==  0)
   {
     addTriangle(p1,p2,p3);
@@ -134,7 +129,6 @@ function subdivideSquare(p1,p2,p3,p4,n)
   if(center == null)
   {
 	center = middleBetween(middleBetween(p1,p2),middleBetween(p2,p3));
-	setCenter(center);
   }
   if(n ==  0)
   {
