@@ -11,6 +11,7 @@ var center = null;
 var triangleSize = 0.5;
 var canvas;
 var figure = 0;
+var wireFrame = false;
 
 function distance(p1,p2)
 {
@@ -95,7 +96,7 @@ function addTriangle(p1,p2,p3)
 function addSquare(p1,p2,p3,p4)
 {
 	addTriangle(p1,p2,p3);
-	addTriangle(p1,p3,p4);
+	addTriangle(p1,p4,p3);
 }
 
 function setCenter(c)
@@ -122,7 +123,7 @@ function subdivideTriangle(p1,p2,p3,n)
   var m31 = middleBetween(p3,p1);
   subdivideTriangle(m12,p2,m23,n-1);
   subdivideTriangle(p1,m12,m31,n-1);
-  // subdivideTriangle(m12,m23,m31,n-1);
+  subdivideTriangle(m12,m23,m31,n-1);
   subdivideTriangle(m31,m23,p3,n-1);
 };
 
@@ -226,8 +227,17 @@ function changeFigure(n)
 	renderTriangles(maxSubdivisions);
 };
 
+function renderWireframe()
+{
+	for(i = 0; i < vertices.length/2 ; i += 3)
+		gl.drawArrays( gl.LINE_LOOP,i ,3 );
+};
+
 function render() {
     gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
     gl.clear( gl.COLOR_BUFFER_BIT );
-    gl.drawArrays( gl.TRIANGLES, 0, vertices.length/2);
+	if(wireFrame)
+		renderWireframe();
+	else
+		gl.drawArrays( gl.TRIANGLES, 0, vertices.length/2);
 }
