@@ -118,7 +118,7 @@ function subdivideTriangle(p1,p2,p3,n)
   var m31 = middleBetween(p3,p1);
   subdivideTriangle(m12,p2,m23,n-1);
   subdivideTriangle(p1,m12,m31,n-1);
-  subdivideTriangle(m12,m23,m31,n-1);
+//  subdivideTriangle(m12,m23,m31,n-1);
   subdivideTriangle(m31,m23,p3,n-1);
 };
 
@@ -230,7 +230,7 @@ function renderWireframe()
 function render() {
     gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
     gl.clear( gl.COLOR_BUFFER_BIT );
-	if(wireFrame)
+	if(wireFrame )
 		renderWireframe();
 	else
 		gl.drawArrays( gl.TRIANGLES, 0, vertices.length/2);
