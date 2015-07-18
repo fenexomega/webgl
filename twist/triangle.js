@@ -12,6 +12,17 @@ var triangleSize = 0.5;
 var canvas;
 var figure = 0;
 var wireFrame = false;
+var gasket = false;
+
+function initForm()
+{
+	document.getElementById("triangleSlider").value = 0
+	document.getElementById("angleSlider").value = 0
+	document.getElementById("iTriangle").checked = true
+	document.getElementsByName("cb_wireframe")[0].checked = false
+	document.getElementsByName("cb_gasket")[0].checked = false
+}
+
 
 function distance(p1,p2)
 {
@@ -90,7 +101,7 @@ function addTriangle(p1,p2,p3)
 	vertices = vertices.concat(p2);
 	vertices = vertices.concat(p3);
 	for(i = 0; i < 3; ++i)
-	 color = color.concat([1,1,1]);
+	 color = color.concat([0,0.8,1]);
 };
 
 function addSquare(p1,p2,p3,p4)
@@ -118,7 +129,8 @@ function subdivideTriangle(p1,p2,p3,n)
   var m31 = middleBetween(p3,p1);
   subdivideTriangle(m12,p2,m23,n-1);
   subdivideTriangle(p1,m12,m31,n-1);
-//  subdivideTriangle(m12,m23,m31,n-1);
+  if(!gasket)
+	  subdivideTriangle(m12,m23,m31,n-1);
   subdivideTriangle(m31,m23,p3,n-1);
 };
 
@@ -138,7 +150,8 @@ function subdivideSquare(p1,p2,p3,p4,n)
   }
   subdivideSquare(p1,a,center,d,n-1);
   subdivideSquare(a,p2,b,center,n-1);
-  subdivideSquare(center,b,p3,c,n-1);
+  if(!gasket)
+	  subdivideSquare(center,b,p3,c,n-1);
   subdivideSquare(d,center,c,p4,n-1);
 };
 
@@ -160,11 +173,16 @@ function renderTriangles(n)
 	//
 	//
     //                 1,1,1];
-	vertices = [];
+	vertices = []
+	// var vertice = [[Math.sin(2.0 * Math.PI / 3.0 * 0), Math.cos(2.0 * Math.PI / 3.0 * 0)],
+	//    [Math.sin(2.0 * Math.PI / 3.0 * 1), Math.cos(2.0 * Math.PI / 3.0 * 1)],
+	// 		      [Math.sin(2.0 * Math.PI / 3.0 * 2), Math.cos(2.0 * Math.PI / 3.0 * 2)]]
 	colors   = [];
+	var vertice =[[-0.5,-0.35],[0.5,-0.35],[0.0,0.65]]
+
 	maxSubdivisions = n;
 	if(figure == 0)
-		subdivideTriangle([-triangleSize,-triangleSize],[0,triangleSize],[triangleSize,-triangleSize],n);
+		subdivideTriangle(vertice[0],vertice[1],vertice[2],n);
 	else
 		subdivideSquare([-triangleSize,-triangleSize],[-triangleSize,triangleSize],
 				[triangleSize,triangleSize],[triangleSize,-triangleSize],n);
@@ -199,6 +217,7 @@ function renderTriangles(n)
 
 window.onload = function init()
 {
+	initForm()
     canvas = document.getElementById( "gl-canvas" );
 
     gl = WebGLUtils.setupWebGL( canvas );
