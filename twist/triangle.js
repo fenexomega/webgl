@@ -126,19 +126,16 @@ function subdivideTriangle(p1,p2,p3,n)
 function subdivideSquare(p1,p2,p3,p4,n)
 {
 
-  if(center == null)
-  {
-	center = middleBetween(middleBetween(p1,p2),middleBetween(p2,p3));
-  }
+  var a = middleBetween(p1,p2);
+  var b = middleBetween(p2,p3);
+  var c = middleBetween(p3,p4);
+  var d = middleBetween(p4,p1);
+  var center = middleBetween(a,c);
   if(n ==  0)
   {
     addSquare(p1,p2,p3,p4);
     return;
   }
-  var a = middleBetween(p1,p2);
-  var b = middleBetween(p2,p3);
-  var c = middleBetween(p3,p4);
-  var d = middleBetween(p4,p1);
   subdivideSquare(p1,a,center,d,n-1);
   subdivideSquare(a,p2,b,center,n-1);
   subdivideSquare(center,b,p3,c,n-1);
