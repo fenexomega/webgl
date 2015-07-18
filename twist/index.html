@@ -11,7 +11,7 @@ varying vec3 outColor;
 void main()
 {
     outColor = vColor;
-	float d = sqrt(pow(vPosition.x,2) + pow(vPosition.y,2)); 
+	float d = sqrt(pow(vPosition.x,2.0) + pow(vPosition.y,2.0)); 
 	vec2 v = vPosition;
 	float c = cos(d*angle);
 	float s = sin(d*angle);
