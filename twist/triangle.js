@@ -209,7 +209,7 @@ function changeFigure(n)
 
 function renderWireframe()
 {
-	for(i = 0; i < vertices.length/2 ; i += 3)
+	for(i = 0; i < vertices.length*2 ; i += 3)
 		gl.drawArrays( gl.LINE_LOOP,i ,3 );
 };
 
