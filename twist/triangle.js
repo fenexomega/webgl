@@ -159,16 +159,7 @@ function setTwist(n)
 function renderTriangles(n)
 {
 
-    // vertices = [-1, -1, 0, 1, 1, -1];
-    // colors   = [1,1,1,
-    //                 1,1,1,
-	//
-	//
-    //                 1,1,1];
 	vertices = []
-	// var vertice = [[Math.sin(2.0 * Math.PI / 3.0 * 0), Math.cos(2.0 * Math.PI / 3.0 * 0)],
-	//    [Math.sin(2.0 * Math.PI / 3.0 * 1), Math.cos(2.0 * Math.PI / 3.0 * 1)],
-	// 		      [Math.sin(2.0 * Math.PI / 3.0 * 2), Math.cos(2.0 * Math.PI / 3.0 * 2)]]
 	var vertice =[[-0.5,-0.35],[0.5,-0.35],[0.0,0.65]]
 
 	maxSubdivisions = n;
@@ -178,9 +169,6 @@ function renderTriangles(n)
 		subdivideSquare([-triangleSize,-triangleSize],[-triangleSize,triangleSize],
 				[triangleSize,triangleSize],[triangleSize,-triangleSize],n);
     //  Configure WebGL
-	//
-	//console.log(vertices);
-	console.log(n)
 
 
     // Load the data into the GPU
