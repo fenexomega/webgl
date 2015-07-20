@@ -3,16 +3,15 @@ var gl;
 var points;
 var programNbr;
 var numTriangles = 1;
-var vertices = [];
-var color = [];
+var vertices 
 var angle = 0.0;//1.54;
 var maxSubdivisions;
-var center = null;
 var triangleSize = 0.5;
 var canvas;
 var figure = 0;
 var wireFrame = false;
 var gasket = false;
+
 
 function initForm()
 {
@@ -85,23 +84,15 @@ function twist(p,center)
 
 function middleBetween(p1,p2)
 {
-	var result = [];
-	var vector = sumArray(p2,p1);
-	vector = divideArray(vector,2);
-	result = sumArray(p1,vector);
-	return vector;
+	var result = [(p1[0]+p2[0])/2,(p1[1]+p2[1])/2];
+	return result;
 };
 
 function addTriangle(p1,p2,p3)
 {
-	// p1 = twist(p1,center);
-	// p2 = twist(p2,center);
-	// p3 = twist(p3,center);
-	vertices = vertices.concat(p1);
-	vertices = vertices.concat(p2);
-	vertices = vertices.concat(p3);
-	for(i = 0; i < 3; ++i)
-	 color = color.concat([0,0.8,1]);
+	vertices.push(p1);
+	vertices.push(p2);
+	vertices.push(p3);
 };
 
 function addSquare(p1,p2,p3,p4)
@@ -127,27 +118,28 @@ function subdivideTriangle(p1,p2,p3,n)
   var m12 = middleBetween(p1,p2);
   var m23 = middleBetween(p2,p3);
   var m31 = middleBetween(p3,p1);
-  subdivideTriangle(m12,p2,m23,n-1);
-  subdivideTriangle(p1,m12,m31,n-1);
+  n -= 1;
+  subdivideTriangle(m12,p2,m23,n);
+  subdivideTriangle(p1,m12,m31,n);
   if(!gasket)
-	  subdivideTriangle(m12,m23,m31,n-1);
-  subdivideTriangle(m31,m23,p3,n-1);
+	  subdivideTriangle(m12,m23,m31,n);
+  subdivideTriangle(m31,m23,p3,n);
 };
 
 
 function subdivideSquare(p1,p2,p3,p4,n)
 {
 
-  var a = middleBetween(p1,p2);
-  var b = middleBetween(p2,p3);
-  var c = middleBetween(p3,p4);
-  var d = middleBetween(p4,p1);
-  var center = middleBetween(a,c);
   if(n ==  0)
   {
     addSquare(p1,p2,p3,p4);
     return;
   }
+  var a = middleBetween(p1,p2);
+  var b = middleBetween(p2,p3);
+  var c = middleBetween(p3,p4);
+  var d = middleBetween(p4,p1);
+  var center = middleBetween(a,c);
   subdivideSquare(p1,a,center,d,n-1);
   subdivideSquare(a,p2,b,center,n-1);
   if(!gasket)
@@ -177,7 +169,6 @@ function renderTriangles(n)
 	// var vertice = [[Math.sin(2.0 * Math.PI / 3.0 * 0), Math.cos(2.0 * Math.PI / 3.0 * 0)],
 	//    [Math.sin(2.0 * Math.PI / 3.0 * 1), Math.cos(2.0 * Math.PI / 3.0 * 1)],
 	// 		      [Math.sin(2.0 * Math.PI / 3.0 * 2), Math.cos(2.0 * Math.PI / 3.0 * 2)]]
-	colors   = [];
 	var vertice =[[-0.5,-0.35],[0.5,-0.35],[0.0,0.65]]
 
 	maxSubdivisions = n;
@@ -189,8 +180,7 @@ function renderTriangles(n)
     //  Configure WebGL
 	//
 	//console.log(vertices);
-
-    gl.viewport( 0, 0, canvas.width, canvas.height );
+	console.log(n)
 
 
     // Load the data into the GPU
@@ -202,15 +192,6 @@ function renderTriangles(n)
     var vPosition = gl.getAttribLocation( programNbr, "vPosition" );
     gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vPosition );
-
-    var colorBufferId = gl.createBuffer();
-    gl.bindBuffer( gl.ARRAY_BUFFER, colorBufferId );
-    gl.bufferData( gl.ARRAY_BUFFER, flatten(color), gl.STATIC_DRAW );
-
-    var vColor = gl.getAttribLocation(programNbr, "vColor");
-
-    gl.vertexAttribPointer(vColor,3,gl.FLOAT,false,0,0);
-    gl.enableVertexAttribArray(vColor);
 
     render();
 };
@@ -226,6 +207,7 @@ window.onload = function init()
     var program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
 	programNbr = program;
+    gl.viewport( 0, 0, canvas.width, canvas.height );
 
 	renderTriangles(0);
 
@@ -249,5 +231,5 @@ function render() {
 	if(wireFrame )
 		renderWireframe();
 	else
-		gl.drawArrays( gl.TRIANGLES, 0, vertices.length/2);
+		gl.drawArrays( gl.TRIANGLES, 0, vertices.length);
 }

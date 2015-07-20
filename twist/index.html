@@ -3,14 +3,11 @@
 <meta http-equiv="content-type" content="text/html; charset=windows-1252">
 <script id="vertex-shader" type="x-shader/x-vertex">
 attribute vec2 vPosition;
-attribute vec3 vColor;
 uniform float angle;
 
-varying vec3 outColor;
 
 void main()
 {
-    outColor = vColor;
 	vec2 v = vPosition;
 	float d = sqrt(v.x*v.x + v.y*v.y); 
 	float rangle = radians(angle);
@@ -25,11 +22,10 @@ void main()
 
 <script id="fragment-shader" type="x-shader/x-fragment">
 precision mediump float;
-varying vec3 outColor;
 
 void main()
 {
-    gl_FragColor = vec4(outColor, 1.0 );
+    gl_FragColor = vec4(0.0,0.8,1.0, 1.0 );
 }
 </script>
 
@@ -47,7 +43,7 @@ Oops ... your browser doesn't support the HTML5 canvas element
 </canvas>
 <p># Subdivisions</p>
 <div>
-0<input id="triangleSlider" type="range" value="0" step="1" max="5" align="left" oninput="renderTriangles(this.value)" >5
+0<input id="triangleSlider" type="range" value="0" step="1" max="9" align="left" oninput="renderTriangles(this.value)" >9
 </div>
 <br />
 
