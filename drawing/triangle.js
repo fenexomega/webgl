@@ -6,13 +6,22 @@ var vertices = []
 var canvas;
 var sliders 
 var clCanvasCtx
+var lineWidth = 1
 
 function initUI()
 {
 	sliders[0].value = 0
 	sliders[1].value = 255*0.8
 	sliders[2].value = 255*1
+	sliders[3].value = 1
 	changeColor()
+}
+
+function changeLineWidth(num)
+{
+	lineWidth = num
+	gl.lineWidth(lineWidth)
+	render()
 }
 
 function canvasClear()
@@ -27,6 +36,7 @@ function getSliders()
 	sliders.push(document.getElementById("slidR"))
 	sliders.push(document.getElementById("slidG"))
 	sliders.push(document.getElementById("slidB"))
+	sliders.push(document.getElementById("slidLineWidth"))
 	clCanvasCtx = document.getElementById("color-canvas").getContext('2d')
 }
 
@@ -101,6 +111,8 @@ window.onload = function init()
 	var	vColor = gl.getAttribLocation( program, "vColor")
 	gl.vertexAttribPointer( vColor, 3, gl.FLOAT, false, 0,0);
 	gl.enableVertexAttribArray(vColor)
+	
+	gl.enable(gl.LINE_SMOOTH)
 
 	canvas.addEventListener("mousedown",function(event){
 		if(!canDraw)

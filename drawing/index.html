@@ -44,7 +44,11 @@ Red: <input type="range" min="0" max="255" value="0" id="slidR" onclick="changeC
 Green: <input type="range" min="0" max="255" value="0" id="slidG" onclick="changeColor()"> <br>
 Blue: <input type="range" min="0" max="255" value="0" id="slidB" onclick="changeColor()"> <br>
 
-<canvas id="color-canvas" width="64" height="64"></canvas>
+<canvas id="color-canvas" width="64" height="64"></canvas> 
+
 <button onclick="canvasClear();"  >Clear</button>
+<br>
+Line Width:
+<input type="range" min="1.0" max="10" value="1" step="1" id="slidLineWidth" onclick="changeLineWidth(value)">
 </div>
 </body></html>
