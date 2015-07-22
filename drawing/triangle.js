@@ -27,10 +27,24 @@ window.onload = function init()
     gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vPosition );
 	canvas.addEventListener("mousedown",function(event){
+		if(!canDraw)
+		{
+			var t = [2*event.clientX/canvas.width-1,
+					1-(2*event.clientY/canvas.height)]
+			vertices.push(t);
+			gl.bufferSubData(gl.ARRAY_BUFFER,(vertices.length-1)*8,flatten(t))
+		}
 		canDraw = true
 	})
 	
 	canvas.addEventListener("mouseup",function(event){
+		if(canDraw)
+		{
+			var t = [2*event.clientX/canvas.width-1,
+					1-(2*event.clientY/canvas.height)]
+			vertices.push(t);
+			gl.bufferSubData(gl.ARRAY_BUFFER,(vertices.length-1)*8,flatten(t))
+		}
 		canDraw = false
 	})
 	canvas.addEventListener("mousemove",function(event){
@@ -39,10 +53,13 @@ window.onload = function init()
 		var t = [2*event.clientX/canvas.width-1,
 				1-(2*event.clientY/canvas.height)]
 		vertices.push(t);
+		vertices.push(t);
+		gl.bufferSubData(gl.ARRAY_BUFFER,(vertices.length-2)*8,flatten(t))
 		gl.bufferSubData(gl.ARRAY_BUFFER,(vertices.length-1)*8,flatten(t))
 		render()
 	})
 	canDraw = false
+	render()
 };
 
 
@@ -50,5 +67,5 @@ window.onload = function init()
 function render() {
     gl.clearColor( color[0], color[1], color[2], 1.0 );
     gl.clear( gl.COLOR_BUFFER_BIT );
-	gl.drawArrays( gl.LINE_STRIP, 0, vertices.length);
+	gl.drawArrays( gl.LINES, 0, vertices.length);
 }
