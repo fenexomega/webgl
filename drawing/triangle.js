@@ -13,7 +13,6 @@ function initUI()
 	sliders[1].value = 255*0.8
 	sliders[2].value = 255*1
 	changeColor()
-	console.log("Pressionado")
 }
 
 function canvasClear()
@@ -57,7 +56,7 @@ function changeColor()
 function getGLMousePosition(event)
 {
 	return [2*(event.clientX-canvas.offsetLeft)/canvas.width-1,
-			1-(2*event.clientY/canvas.height)]
+			1-(2*(event.clientY-canvas.offsetTop)/canvas.height)]
 }
 
 function addVertexFromMouse(event)
