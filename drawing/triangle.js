@@ -112,8 +112,6 @@ window.onload = function init()
 	gl.vertexAttribPointer( vColor, 3, gl.FLOAT, false, 0,0);
 	gl.enableVertexAttribArray(vColor)
 	
-	gl.enable(gl.LINE_SMOOTH)
-
 	canvas.addEventListener("mousedown",function(event){
 		if(!canDraw)
 		{
