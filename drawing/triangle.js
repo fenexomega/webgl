@@ -1,15 +1,73 @@
-var color = vec3(0.5,0.5,0.5)
+var backgroundColor = vec3(0.5,0.5,0.5)
 var maxLines = 2000000
 var gl;
 var programNbr;
 var vertices = []
 var canvas;
+var sliders 
+var clCanvasCtx
 
+function initUI()
+{
+	sliders[0].value = 0
+	sliders[1].value = 255*0.8
+	sliders[2].value = 255*1
+	changeColor()
+}
+
+function getSliders()
+{
+	sliders = []
+	sliders.push(document.getElementById("slidR"))
+	sliders.push(document.getElementById("slidG"))
+	sliders.push(document.getElementById("slidB"))
+	clCanvasCtx = document.getElementById("color-canvas").getContext('2d')
+}
+
+function getHexString(number)
+{
+	var string = number.toString(16)
+	while(string.length < 6)
+		string = '0' + string
+	return string
+}
+
+function changeColor()
+{
+	var value = 0
+	color = vec3(sliders[0].value/255,
+				 sliders[1].value/255,
+				 sliders[2].value/255)
+	for(var i = 0; i < 3; ++i)
+		value += Number(sliders[i].value) << 8*(2-i)
+	var colorString = "#" + getHexString(value)
+	console.log(colorString)
+	clCanvasCtx.fillStyle = colorString
+	clCanvasCtx.fillRect(0,0,64,64)
+
+}
+
+function getGLMousePosition(event)
+{
+	return [2*(event.clientX-canvas.offsetLeft)/canvas.width-1,
+			1-(2*event.clientY/canvas.height)]
+}
+
+function addVertexFromMouse(event)
+{
+	var t = getGLMousePosition(event)
+	vertices.push(t);
+	gl.bindBuffer(gl.ARRAY_BUFFER,bufferId)
+	gl.bufferSubData(gl.ARRAY_BUFFER,(vertices.length-1)*8,flatten(t))
+	gl.bindBuffer(gl.ARRAY_BUFFER,colorBufferId)
+	gl.bufferSubData(gl.ARRAY_BUFFER,(vertices.length-1)*12,flatten(color))
+}
 
 window.onload = function init()
 {
     canvas = document.getElementById( "gl-canvas" );
-
+	getSliders()
+	initUI()
     gl = WebGLUtils.setupWebGL( canvas );
     if ( !gl ) { alert( "WebGL isn't available" ); }
     //  Load shaders and initialize attribute buffers
@@ -18,7 +76,7 @@ window.onload = function init()
 	programNbr = program;
     gl.viewport( 0, 0, canvas.width, canvas.height );
     // Load the data into the GPU
-    var bufferId = gl.createBuffer();
+    bufferId = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
     gl.bufferData( gl.ARRAY_BUFFER, maxLines*8, gl.STATIC_DRAW );
 
@@ -26,13 +84,20 @@ window.onload = function init()
     var vPosition = gl.getAttribLocation( programNbr, "vPosition" );
     gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vPosition );
+
+	colorBufferId = gl.createBuffer()
+	gl.bindBuffer(gl.ARRAY_BUFFER, colorBufferId)
+	gl.bufferData(gl.ARRAY_BUFFER, maxLines*12, gl.STATIC_DRAW)
+
+
+	var	vColor = gl.getAttribLocation( programNbr, "vColor")
+	gl.vertexAttribPointer( vColor, 3, gl.FLOAT, false, 0,0);
+	gl.enableVertexAttribArray(vColor)
+
 	canvas.addEventListener("mousedown",function(event){
 		if(!canDraw)
 		{
-			var t = [2*event.clientX/canvas.width-1,
-					1-(2*event.clientY/canvas.height)]
-			vertices.push(t);
-			gl.bufferSubData(gl.ARRAY_BUFFER,(vertices.length-1)*8,flatten(t))
+			addVertexFromMouse(event)
 		}
 		canDraw = true
 	})
@@ -40,22 +105,22 @@ window.onload = function init()
 	canvas.addEventListener("mouseup",function(event){
 		if(canDraw)
 		{
-			var t = [2*event.clientX/canvas.width-1,
-					1-(2*event.clientY/canvas.height)]
-			vertices.push(t);
-			gl.bufferSubData(gl.ARRAY_BUFFER,(vertices.length-1)*8,flatten(t))
+			addVertexFromMouse(event)
 		}
 		canDraw = false
 	})
 	canvas.addEventListener("mousemove",function(event){
 		if(!canDraw)
 			return
-		var t = [2*event.clientX/canvas.width-1,
-				1-(2*event.clientY/canvas.height)]
+		var t = getGLMousePosition(event)
 		vertices.push(t);
 		vertices.push(t);
+		gl.bindBuffer(gl.ARRAY_BUFFER,bufferId)
 		gl.bufferSubData(gl.ARRAY_BUFFER,(vertices.length-2)*8,flatten(t))
 		gl.bufferSubData(gl.ARRAY_BUFFER,(vertices.length-1)*8,flatten(t))
+		gl.bindBuffer(gl.ARRAY_BUFFER,colorBufferId)
+		gl.bufferSubData(gl.ARRAY_BUFFER,(vertices.length-2)*12,flatten(color))
+		gl.bufferSubData(gl.ARRAY_BUFFER,(vertices.length-1)*12,flatten(color))
 		render()
 	})
 	canDraw = false
@@ -65,7 +130,7 @@ window.onload = function init()
 
 
 function render() {
-    gl.clearColor( color[0], color[1], color[2], 1.0 );
+    gl.clearColor( backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.0 );
     gl.clear( gl.COLOR_BUFFER_BIT );
 	gl.drawArrays( gl.LINES, 0, vertices.length);
 }
