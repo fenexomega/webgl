@@ -13,6 +13,13 @@ function initUI()
 	sliders[1].value = 255*0.8
 	sliders[2].value = 255*1
 	changeColor()
+	console.log("Pressionado")
+}
+
+function canvasClear()
+{
+	vertices = []
+	render()
 }
 
 function getSliders()
@@ -71,26 +78,28 @@ window.onload = function init()
     gl = WebGLUtils.setupWebGL( canvas );
     if ( !gl ) { alert( "WebGL isn't available" ); }
     //  Load shaders and initialize attribute buffers
-    var program = initShaders( gl, "vertex-shader", "fragment-shader" );
+    program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
-	programNbr = program;
     gl.viewport( 0, 0, canvas.width, canvas.height );
+	
     // Load the data into the GPU
     bufferId = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
     gl.bufferData( gl.ARRAY_BUFFER, maxLines*8, gl.STATIC_DRAW );
 
-    // Associate out shader variables with our data buffer
-    var vPosition = gl.getAttribLocation( programNbr, "vPosition" );
-    gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
-    gl.enableVertexAttribArray( vPosition );
-
 	colorBufferId = gl.createBuffer()
 	gl.bindBuffer(gl.ARRAY_BUFFER, colorBufferId)
 	gl.bufferData(gl.ARRAY_BUFFER, maxLines*12, gl.STATIC_DRAW)
 
+	canvasClear()
+    // Associate out shader variables with our data buffer
+	gl.bindBuffer(gl.ARRAY_BUFFER,bufferId)
+    var vPosition = gl.getAttribLocation( program, "vPosition" );
+    gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
+    gl.enableVertexAttribArray( vPosition );
 
-	var	vColor = gl.getAttribLocation( programNbr, "vColor")
+	gl.bindBuffer(gl.ARRAY_BUFFER,colorBufferId)
+	var	vColor = gl.getAttribLocation( program, "vColor")
 	gl.vertexAttribPointer( vColor, 3, gl.FLOAT, false, 0,0);
 	gl.enableVertexAttribArray(vColor)
 
