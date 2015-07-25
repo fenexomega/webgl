@@ -1,4 +1,4 @@
-var backgroundColor = vec3(0.5,0.5,0.5)
+var backgroundColor = vec3(0.1,0.1,0.1)
 var maxLines = 2000000
 var gl;
 var programNbr;
