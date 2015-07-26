@@ -114,7 +114,7 @@ window.onload = function init()
 	gl.vertexAttribPointer( vColor, 3, gl.FLOAT, false, 0,0);
 	gl.enableVertexAttribArray(vColor)
 	
-	canvas.addEventListener("mouseup",function(event){
+	canvas.addEventListener("mousedown",function(event){
 		if(!canDraw)
 		{
 			addVertexFromMouse(event)
@@ -122,7 +122,7 @@ window.onload = function init()
 		canDraw = true
 	})
 	
-	canvas.addEventListener("mousedown",function(event){
+	canvas.addEventListener("mouseup",function(event){
 		if(canDraw)
 		{
 			addVertexFromMouse(event)
