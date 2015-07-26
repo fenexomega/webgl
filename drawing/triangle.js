@@ -13,7 +13,7 @@ function initUI()
 	sliders[0].value = 0
 	sliders[1].value = 255*0.8
 	sliders[2].value = 255*1
-	sliders[3].value = 1
+	sliders[3].value = 3
 	changeColor()
 }
 
@@ -27,6 +27,7 @@ function changeLineWidth(num)
 function canvasClear()
 {
 	vertices = []
+	canDraw = false
 	render()
 }
 
@@ -90,6 +91,7 @@ window.onload = function init()
     program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
     gl.viewport( 0, 0, canvas.width, canvas.height );
+	gl.lineWidth(3)
 	
     // Load the data into the GPU
     bufferId = gl.createBuffer();
@@ -112,7 +114,7 @@ window.onload = function init()
 	gl.vertexAttribPointer( vColor, 3, gl.FLOAT, false, 0,0);
 	gl.enableVertexAttribArray(vColor)
 	
-	canvas.addEventListener("mousedown",function(event){
+	canvas.addEventListener("mouseup",function(event){
 		if(!canDraw)
 		{
 			addVertexFromMouse(event)
@@ -120,7 +122,7 @@ window.onload = function init()
 		canDraw = true
 	})
 	
-	canvas.addEventListener("mouseup",function(event){
+	canvas.addEventListener("mousedown",function(event){
 		if(canDraw)
 		{
 			addVertexFromMouse(event)
