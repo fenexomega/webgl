@@ -5,7 +5,9 @@ var vertices = []
 var canvas;
 var sliders 
 var objects = []
-var vPosition = 0, vColor = 0
+var vPosition, vColor
+var uview,uproj,umodel;
+var view,proj;
 
 function createObject(varray,earray,carray)
 {
@@ -20,7 +22,7 @@ function createObject(varray,earray,carray)
 	
 	var m_elements = gl.createBuffer()
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, m_elements)
-	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,flatten(m_elements) , gl.STATIC_DRAW)
+	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint8Array(earray) , gl.STATIC_DRAW)
 
     // Associate out shader variables with our data buffer
 	gl.bindBuffer(gl.ARRAY_BUFFER,m_buffer)
@@ -30,16 +32,34 @@ function createObject(varray,earray,carray)
     gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vPosition );
 
-	gl.bindBuffer(gl.ARRAY_BUFFER,colorBufferId)
+	gl.bindBuffer(gl.ARRAY_BUFFER,colorBuffer)
 	if(!vColor)
 		vColor = gl.getAttribLocation( program, "vColor")
+	
 	gl.vertexAttribPointer( vColor, 3, gl.FLOAT, false, 0,0);
 	gl.enableVertexAttribArray(vColor)
 
+	if(!uview)
+	{
+		uview = gl.getUniformLocation(program,"view")
+		gl.uniform4fv(uview,flatten(view))
+	}
+	if(!uproj)
+	{
+		uproj = gl.getUniformLocation(program,"proj")
+		gl.uniform4fv(uproj,flatten(proj))
+	}
+
+	if(!umodel)
+		umodel = gl.getUniformLocation(program,"model")
+
+	console.log("[DEBUG] Creating object")
 	return { 
 		buffer: m_buffer, 
-		size: carray.length , 
+		size: earray.length , 
 		render: function(){
+			console.log("[DEBUG] Rendering object")
+			gl.uniform4fv(umodel,flatten(mat4()))
 			gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);
 			gl.drawElements(gl.TRIANGLES,this.size,gl.UNSIGNED_BYTE,0)
 		}
@@ -136,13 +156,22 @@ window.onload = function init()
 
 	})
 	canDraw = false
-	requestAnimationFrame(render);
+	view = lookAt(
+			[0,0,-1.5],
+			[0,0,0],
+			[0,1,0]
+			);
+
+	proj = perspective(70,1,10,0.1)
+	
 };
 
 
 
 function render() {
     gl.clearColor( backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.0 );
-    gl.clear( gl.COLOR_BUFFER_BIT );
-	gl.drawArrays( gl.LINES, 0, vertices.length);
+    gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
+	for(var o of objects)
+		o.render()
+//	requestAnimationFrame(render);
 }

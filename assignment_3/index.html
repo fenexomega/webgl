@@ -10,9 +10,8 @@ varying vec4 Color;
 
 void main()
 {
-	mat4 transforMatrix = proj * view * model;
 	Color = vec4(vColor,1.0);
-	gl_Position = transforMatrix * vPosition;
+	gl_Position = proj * view * model* vec4(vPosition.xyz,1.0);
 }
 </script>
 
