@@ -1,30 +1,55 @@
 var backgroundColor = vec3(0.1,0.1,0.1)
-var maxLines = 2000000
 var gl;
 var programNbr;
 var vertices = []
 var canvas;
 var sliders 
-var clCanvasCtx
-var lineWidth = 1
+var objects = []
+var vPosition = 0, vColor = 0
+
+function createObject(varray,earray,carray)
+{
+    // Load the data into the GPU
+    var m_buffer = gl.createBuffer();
+    gl.bindBuffer( gl.ARRAY_BUFFER, m_buffer );
+    gl.bufferData( gl.ARRAY_BUFFER, flatten(varray), gl.STATIC_DRAW );
+
+	var colorBuffer = gl.createBuffer()
+	gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer)
+	gl.bufferData(gl.ARRAY_BUFFER,flatten(carray) , gl.STATIC_DRAW)
+	
+	var m_elements = gl.createBuffer()
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, m_elements)
+	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,flatten(m_elements) , gl.STATIC_DRAW)
+
+    // Associate out shader variables with our data buffer
+	gl.bindBuffer(gl.ARRAY_BUFFER,m_buffer)
+
+    if(!vPosition)
+		vPosition = gl.getAttribLocation( program, "vPosition" );
+    gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
+    gl.enableVertexAttribArray( vPosition );
+
+	gl.bindBuffer(gl.ARRAY_BUFFER,colorBufferId)
+	if(!vColor)
+		vColor = gl.getAttribLocation( program, "vColor")
+	gl.vertexAttribPointer( vColor, 3, gl.FLOAT, false, 0,0);
+	gl.enableVertexAttribArray(vColor)
+
+	return { 
+		buffer: m_buffer, 
+		size: carray.length , 
+		render: function(){
+			gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);
+			gl.drawElements(gl.TRIANGLES,this.size,gl.UNSIGNED_BYTE,0)
+		}
+	}	
+}
 
 function initUI()
 {
 }
 
-function changeLineWidth(num)
-{
-	lineWidth = num
-	gl.lineWidth(lineWidth)
-	render()
-}
-
-function canvasClear()
-{
-	vertices = []
-	canDraw = false
-	render()
-}
 
 function getSliders()
 {
@@ -75,39 +100,24 @@ function addVertexFromMouse(event)
 	gl.bufferSubData(gl.ARRAY_BUFFER,(vertices.length-1)*12,flatten(color))
 }
 
-window.onload = function init()
+function initGL()
 {
     canvas = document.getElementById( "gl-canvas" );
 	getSliders()
 	initUI()
     gl = WebGLUtils.setupWebGL( canvas );
     if ( !gl ) { alert( "WebGL isn't available" ); }
+	gl.enable(gl.DEPTH_TEST)
+	
+}
+
+window.onload = function init()
+{
+	initGL()
     //  Load shaders and initialize attribute buffers
     program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
     gl.viewport( 0, 0, canvas.width, canvas.height );
-	gl.lineWidth(3)
-	
-    // Load the data into the GPU
-    bufferId = gl.createBuffer();
-    gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
-    gl.bufferData( gl.ARRAY_BUFFER, maxLines*8, gl.STATIC_DRAW );
-
-	colorBufferId = gl.createBuffer()
-	gl.bindBuffer(gl.ARRAY_BUFFER, colorBufferId)
-	gl.bufferData(gl.ARRAY_BUFFER, maxLines*12, gl.STATIC_DRAW)
-
-	canvasClear()
-    // Associate out shader variables with our data buffer
-	gl.bindBuffer(gl.ARRAY_BUFFER,bufferId)
-    var vPosition = gl.getAttribLocation( program, "vPosition" );
-    gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
-    gl.enableVertexAttribArray( vPosition );
-
-	gl.bindBuffer(gl.ARRAY_BUFFER,colorBufferId)
-	var	vColor = gl.getAttribLocation( program, "vColor")
-	gl.vertexAttribPointer( vColor, 3, gl.FLOAT, false, 0,0);
-	gl.enableVertexAttribArray(vColor)
 	
 	canvas.addEventListener("mousedown",function(event){
 		if(!canDraw)
@@ -126,7 +136,7 @@ window.onload = function init()
 
 	})
 	canDraw = false
-	render()
+	requestAnimationFrame(render);
 };
 
 
