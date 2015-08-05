@@ -11,7 +11,7 @@ varying vec4 Color;
 void main()
 {
 	Color = vec4(vColor,1.0);
-	gl_Position =  proj*view*model* vec4(vPosition.xyz,1.0);
+	gl_Position =  proj*view*model* vPosition;
 }
 </script>
 
@@ -40,7 +40,7 @@ void main()
 <canvas id="gl-canvas" width="1024" height="728">
 Oops ... your browser doesn't support the HTML5 canvas element
 </canvas>
-<div id="slidholder">
+<button type="button" onclick="createCube(1.0,[1,0,0]);">Cube</button>
 
 </div>
 </body></html>

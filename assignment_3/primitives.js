@@ -1,4 +1,4 @@
-function createCube(cubeSize,cubeColor)
+function createCube(cubeSize,cubeColor,cubePos)
 {
 	var varray = []
 	var carray = []
@@ -48,7 +48,7 @@ function createCube(cubeSize,cubeColor)
 	for(var i = 0; i < varray.length; i+=4)
 		earray.push(i,i+1,i+2,i+2,i+3,i);
 	
-	var obj = createObject(varray,earray,carray)
+	var obj = createObject(varray,earray,carray,cubePos)
 	objects.push(obj)
 	render()
 }

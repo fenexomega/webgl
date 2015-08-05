@@ -10,15 +10,19 @@ var uview,uproj,umodel;
 var view,proj;
 var wireframes = true
 
-function createObject(varray,earray,carray)
+function createObject(varray,earray,carray,pos)
 {
     // Load the data into the GPU
+	var m_model = mat4()
+	if(pos != undefined)
+		m_model = translate(pos[0],pos[1],pos[2])
 	
 	var obj = { 
 		size: earray.length , 
+		model: m_model,
 		render: function(){
 			console.log("[DEBUG] Rendering object")
-			gl.uniformMatrix4fv(umodel,false,flatten(mat4(1.0)))
+			gl.uniformMatrix4fv(umodel,false,flatten(this.model))
 			// NOTE: como não há Vertex Array Object, 
 			// eu tenho de sempre realocar os ponteiros para a placa de 
 			// video.
@@ -29,8 +33,8 @@ function createObject(varray,earray,carray)
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ebo)
 			if(wireframes)
 			{
-				for(i = 0; i < this.size ; i += 3)
-					gl.drawElements( gl.LINE_LOOP,3 ,gl.UNSIGNED_BYTE,i );
+				for(i = 0; i < this.size ; i += 4)
+					gl.drawArrays(gl.LINE_LOOP,i,4);
 			}
 			else
 				gl.drawElements(gl.TRIANGLES,this.size,gl.UNSIGNED_BYTE,0)
@@ -144,6 +148,8 @@ function initGL()
 	
 }
 
+
+
 window.onload = function init()
 {
 	initGL()
@@ -153,29 +159,32 @@ window.onload = function init()
     gl.viewport( 0, 0, canvas.width, canvas.height );
 	
 	canvas.addEventListener("mousedown",function(event){
+		if(canDraw)
+		{
+			var pos = getGLMousePosition(event)
+			createCube(0.5,[0,1,1],[pos[0]*(1+Math.abs(1)),pos[1]*(1+Math.abs(1)),-1])
+		}
+		canDraw = false
+	})
+	
+	canvas.addEventListener("mouseup",function(event){
 		if(!canDraw)
 		{
 		}
 		canDraw = true
 	})
-	
-	canvas.addEventListener("mouseup",function(event){
-		if(canDraw)
-		{
-		}
-		canDraw = false
-	})
 	canvas.addEventListener("mousemove",function(event){
 
 	})
-	canDraw = false
+	canDraw = true
 	view = lookAt(
-			[0,0,-1.5],
+			[0,0, 1.5],
 			[0,0,0],
 			[0,1,0]
 			);
 
-	proj = perspective(90,canvas.width/canvas.height,10,0.1)
+	console.log(canvas.width/canvas.height)
+	proj = perspective(70,canvas.width/canvas.height,10,0.1)
 	
 };
 
