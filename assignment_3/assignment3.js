@@ -8,6 +8,7 @@ var objects = []
 var vPosition, vColor
 var uview,uproj,umodel;
 var view,proj;
+var wireframes = true
 
 function createObject(varray,earray,carray)
 {
@@ -18,12 +19,21 @@ function createObject(varray,earray,carray)
 		render: function(){
 			console.log("[DEBUG] Rendering object")
 			gl.uniformMatrix4fv(umodel,false,flatten(mat4(1.0)))
+			// NOTE: como não há Vertex Array Object, 
+			// eu tenho de sempre realocar os ponteiros para a placa de 
+			// video.
 			gl.bindBuffer(gl.ARRAY_BUFFER,this.vbo);
 			gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
 			gl.bindBuffer(gl.ARRAY_BUFFER,obj.cbo)
 			gl.vertexAttribPointer( vColor, 3, gl.FLOAT, false, 0,0);
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ebo)
-			gl.drawElements(gl.TRIANGLES,this.size,gl.UNSIGNED_BYTE,0)
+			if(wireframes)
+			{
+				for(i = 0; i < this.size ; i += 3)
+					gl.drawElements( gl.LINE_LOOP,3 ,gl.UNSIGNED_BYTE,i );
+			}
+			else
+				gl.drawElements(gl.TRIANGLES,this.size,gl.UNSIGNED_BYTE,0)
 		}
 	}	
 
@@ -45,14 +55,11 @@ function createObject(varray,earray,carray)
 
     if(!vPosition)
 		vPosition = gl.getAttribLocation( program, "vPosition" );
-    gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vPosition );
 
 	gl.bindBuffer(gl.ARRAY_BUFFER,obj.cbo)
 	if(!vColor)
 		vColor = gl.getAttribLocation( program, "vColor")
-	
-	gl.vertexAttribPointer( vColor, 3, gl.FLOAT, false, 0,0);
 	gl.enableVertexAttribArray(vColor)
 
 	if(!uview)
@@ -168,7 +175,7 @@ window.onload = function init()
 			[0,1,0]
 			);
 
-	proj = perspective(70,1,10,0.1)
+	proj = perspective(90,canvas.width/canvas.height,10,0.1)
 	
 };
 
