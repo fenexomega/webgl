@@ -18,7 +18,11 @@ function createObject(varray,earray,carray)
 		render: function(){
 			console.log("[DEBUG] Rendering object")
 			gl.uniformMatrix4fv(umodel,false,flatten(mat4(1.0)))
-			gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);
+			gl.bindBuffer(gl.ARRAY_BUFFER,this.vbo);
+			gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
+			gl.bindBuffer(gl.ARRAY_BUFFER,obj.cbo)
+			gl.vertexAttribPointer( vColor, 3, gl.FLOAT, false, 0,0);
+			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ebo)
 			gl.drawElements(gl.TRIANGLES,this.size,gl.UNSIGNED_BYTE,0)
 		}
 	}	
