@@ -12,27 +12,39 @@ var view,proj;
 function createObject(varray,earray,carray)
 {
     // Load the data into the GPU
-    var m_buffer = gl.createBuffer();
-    gl.bindBuffer( gl.ARRAY_BUFFER, m_buffer );
+	
+	var obj = { 
+		size: earray.length , 
+		render: function(){
+			console.log("[DEBUG] Rendering object")
+			gl.uniformMatrix4fv(umodel,false,flatten(mat4(1.0)))
+			gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);
+			gl.drawElements(gl.TRIANGLES,this.size,gl.UNSIGNED_BYTE,0)
+		}
+	}	
+
+
+    obj.vbo = gl.createBuffer();
+    gl.bindBuffer( gl.ARRAY_BUFFER, obj.vbo );
     gl.bufferData( gl.ARRAY_BUFFER, flatten(varray), gl.STATIC_DRAW );
 
-	var colorBuffer = gl.createBuffer()
-	gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer)
+	obj.cbo = gl.createBuffer()
+	gl.bindBuffer(gl.ARRAY_BUFFER, obj.cbo)
 	gl.bufferData(gl.ARRAY_BUFFER,flatten(carray) , gl.STATIC_DRAW)
 	
-	var m_elements = gl.createBuffer()
-	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, m_elements)
+	obj.ebo = gl.createBuffer()
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj.ebo)
 	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint8Array(earray) , gl.STATIC_DRAW)
 
     // Associate out shader variables with our data buffer
-	gl.bindBuffer(gl.ARRAY_BUFFER,m_buffer)
+	gl.bindBuffer(gl.ARRAY_BUFFER,obj.vbo)
 
     if(!vPosition)
 		vPosition = gl.getAttribLocation( program, "vPosition" );
     gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vPosition );
 
-	gl.bindBuffer(gl.ARRAY_BUFFER,colorBuffer)
+	gl.bindBuffer(gl.ARRAY_BUFFER,obj.cbo)
 	if(!vColor)
 		vColor = gl.getAttribLocation( program, "vColor")
 	
@@ -42,28 +54,19 @@ function createObject(varray,earray,carray)
 	if(!uview)
 	{
 		uview = gl.getUniformLocation(program,"view")
-		gl.uniform4fv(uview,flatten(view))
+		gl.uniformMatrix4fv(uview,false,flatten(view))
 	}
 	if(!uproj)
 	{
 		uproj = gl.getUniformLocation(program,"proj")
-		gl.uniform4fv(uproj,flatten(proj))
+		gl.uniformMatrix4fv(uproj,false,flatten(proj))
 	}
 
 	if(!umodel)
 		umodel = gl.getUniformLocation(program,"model")
 
 	console.log("[DEBUG] Creating object")
-	return { 
-		buffer: m_buffer, 
-		size: earray.length , 
-		render: function(){
-			console.log("[DEBUG] Rendering object")
-			gl.uniform4fv(umodel,flatten(mat4()))
-			gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);
-			gl.drawElements(gl.TRIANGLES,this.size,gl.UNSIGNED_BYTE,0)
-		}
-	}	
+	return obj 
 }
 
 function initUI()
@@ -78,7 +81,6 @@ function getSliders()
 	sliders.push(document.getElementById("slidG"))
 	sliders.push(document.getElementById("slidB"))
 	sliders.push(document.getElementById("slidLineWidth"))
-	clCanvasCtx = document.getElementById("color-canvas").getContext('2d')
 }
 
 function getHexString(number)

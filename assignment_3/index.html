@@ -11,7 +11,7 @@ varying vec4 Color;
 void main()
 {
 	Color = vec4(vColor,1.0);
-	gl_Position = proj * view * model* vec4(vPosition.xyz,1.0);
+	gl_Position =  proj*view*model* vec4(vPosition.xyz,1.0);
 }
 </script>
 
@@ -42,6 +42,5 @@ Oops ... your browser doesn't support the HTML5 canvas element
 </canvas>
 <div id="slidholder">
 
-<canvas id="color-canvas" width="64" height="64"></canvas> 
 </div>
 </body></html>

@@ -48,6 +48,7 @@ function createCube(cubeSize,cubeColor)
 	for(var i = 0; i < varray.length; i+=4)
 		earray.push(i,i+1,i+2,i+2,i+3,i);
 	
-	objects.push(createObject(varray,earray,carray))
-			render()
+	var obj = createObject(varray,earray,carray)
+	objects.push(obj)
+	render()
 }
