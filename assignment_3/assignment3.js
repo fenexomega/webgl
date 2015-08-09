@@ -9,6 +9,18 @@ var vPosition, vColor
 var uview,uproj,umodel;
 var view,proj;
 var wireframes = true
+var zValue = 0
+
+
+function changeDepth(value)
+{
+	zValue = -value	
+}
+
+function initGUI()
+{
+	
+}
 
 function createObject(varray,earray,carray,pos)
 {
@@ -148,6 +160,12 @@ function initGL()
 	
 }
 
+function ifZero(value)
+{
+	if(!value)
+		return 1
+	return value
+}
 
 
 window.onload = function init()
@@ -162,7 +180,15 @@ window.onload = function init()
 		if(canDraw)
 		{
 			var pos = getGLMousePosition(event)
-			createCube(0.5,[0,1,1],[pos[0]*(1+Math.abs(1)),pos[1]*(1+Math.abs(1)),-1])
+			console.log(pos)
+
+			//Really bad code here. That is what you get when 
+			//you have pratically zero math and linear algebra background
+			//*****
+			//Doing some "magic numbers" to compessate the mouse position with the z-depth value
+			createCube(0.5,[0,1,1],[pos[0]*(1+Math.abs(zValue)),
+					pos[1]*(Math.abs(zValue)*0.875+1/ifZero(zValue)),
+					zValue])
 		}
 		canDraw = false
 	})
@@ -184,7 +210,7 @@ window.onload = function init()
 			);
 
 	console.log(canvas.width/canvas.height)
-	proj = perspective(70,canvas.width/canvas.height,10,0.1)
+	proj = perspective(70,canvas.width/canvas.height,25,0.1)
 	
 };
 
