@@ -1,3 +1,15 @@
+function createFigure(figureId,pos,color,size)
+{
+	switch(figureId)
+	{
+		case figures.cube:
+			createCube(size,color,pos)
+			break
+
+
+	}
+}
+
 function createCube(cubeSize,cubeColor,cubePos)
 {
 	var varray = []
@@ -50,5 +62,4 @@ function createCube(cubeSize,cubeColor,cubePos)
 	
 	var obj = createObject(varray,earray,carray,cubePos)
 	objects.push(obj)
-	render()
 }

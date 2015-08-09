@@ -11,12 +11,25 @@ var view,proj;
 var wireframes = true
 var zValue = 0
 var selectedFigure = 1
+var selectedColor = [0,1,1]
 
 var figures = {
 	cube: 1,
 	sphere: 2,
 	cone: 3,
 	cilinder: 4
+}
+
+function changeColor(value)
+{
+	console.log(value)
+	selectedColor = [
+		parseInt("0x" + value.slice(1,3))/255,
+		parseInt("0x" + value.slice(3,5))/255,
+		parseInt("0x" + value.slice(5,7))/255,
+	]
+
+	console.log(selectedColor)
 }
 
 var camera = {
@@ -73,7 +86,6 @@ function createObject(varray,earray,carray,pos)
 		size: earray.length , 
 		model: m_model,
 		render: function(){
-			console.log("[DEBUG] Rendering object")
 			gl.uniformMatrix4fv(umodel,false,flatten(this.model))
 			// NOTE: como não há Vertex Array Object, 
 			// eu tenho de sempre realocar os ponteiros para a placa de 
@@ -148,7 +160,7 @@ function getHexString(number)
 	return string
 }
 
-function changeColor()
+/*function changeColor()
 {
 	var value = 0
 	color = vec3(sliders[0].value/255,
@@ -162,7 +174,7 @@ function changeColor()
 	clCanvasCtx.fillRect(0,0,64,64)
 
 }
-
+*/
 function getGLMousePosition(event)
 {
 	return [2*(event.clientX-canvas.offsetLeft)/canvas.width-1,
@@ -218,9 +230,13 @@ window.onload = function init()
 			//Doing some "magic numbers" to compessate the mouse position with the z-depth value
 			//Has something to do with the ratio of resolution, but hell if I knew
 			//how to explain this sorcery
-			createCube(0.5,[0,1,1],[pos[0]*(1+Math.abs(zValue)),
+			pos = [pos[0]*(1+Math.abs(zValue)),
 					pos[1]*(Math.abs(zValue)*0.8+1/ifZero(-zValue)),
-					zValue])
+					zValue];
+			//TODO get color and size from UI
+			color = selectedColor
+			size = 0.5
+			createFigure(selectedFigure,pos,color,size)
 		}
 		canDraw = false
 	})
@@ -238,6 +254,7 @@ window.onload = function init()
 	
 	camera.pushMatrix()
 
+	render()
 	
 };
 
@@ -248,5 +265,5 @@ function render() {
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
 	for(var o of objects)
 		o.render()
-//	requestAnimationFrame(render);
+	requestAnimationFrame(render);
 }
