@@ -186,8 +186,10 @@ window.onload = function init()
 			//you have pratically zero math and linear algebra background
 			//*****
 			//Doing some "magic numbers" to compessate the mouse position with the z-depth value
+			//Has something to do with the ratio of resolution, but hell if I knew
+			//how to explain this sorcery
 			createCube(0.5,[0,1,1],[pos[0]*(1+Math.abs(zValue)),
-					pos[1]*(Math.abs(zValue)*0.875+1/ifZero(zValue)),
+					pos[1]*(Math.abs(zValue)*0.8+1/ifZero(zValue)),
 					zValue])
 		}
 		canDraw = false
