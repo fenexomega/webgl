@@ -44,7 +44,7 @@ Oops ... your browser doesn't support the HTML5 canvas element
 <div id="div_geoprops">
 	Distance <br>
 	0
-	<input type="range" value="0" min="0" max="15" step="1" onchange="changeDepth(value)">
+	<input type="range" value="0" min="0" max="15" step="1" onchange="changeDepth(value)" id="distance">
 	15
 	<div id="div_transform">
 		Rotation: <br>
@@ -52,7 +52,7 @@ Oops ... your browser doesn't support the HTML5 canvas element
 		<b>y</b>: 0<input type="range" value="0" min="0" max="360" step="1" oninput="transformSelectedObject()" id="roty">360<br>
 		<b>z</b>: 0<input type="range" value="0" min="0" max="360" step="1" oninput="transformSelectedObject()" id="rotz">360<br>
 	</div>
-	<input id="html5colorpicker" class="form-control" onchange="changeColor(value)" value="#ff0000" type="color">
+	<input id="html5colorpicker" class="form-control" onchange="changeColor(value)" value="#00ffff" type="color">
 </div>
 
 <div id="div_geochoose"></div>

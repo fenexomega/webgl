@@ -74,16 +74,26 @@ function changeDepth(value)
 	zValue = -value	
 }
 
+function resetGUI()
+{
+	for (var i = 0, len = rotation_sliders.length; i < len; i++) {
+		rotation_sliders[i].value = 0;
+		
+	}
+}
+
 function initGUI()
 {
 	rotation_sliders.push(document.getElementById("rotx"))	
 	rotation_sliders.push(document.getElementById("roty"))	
 	rotation_sliders.push(document.getElementById("rotz"))	
+	document.getElementById("distance").value = 0
 }
 
 function createObject(varray,earray,carray,pos)
 {
     // Load the data into the GPU
+	resetGUI()
 	var m_model = mat4()
 	if(pos != undefined)
 		m_model = translate(pos[0],pos[1],pos[2])
@@ -111,11 +121,12 @@ function createObject(varray,earray,carray,pos)
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ebo)
 			if(wireframes)
 			{
-				for(var i = 0; i < this.size ; i += 4)
-					gl.drawArrays(gl.LINE_LOOP,i,4);
+				for(var i = 0; i < this.size*2 ; i += 3)
+			//		gl.drawArrays(gl.LINE_LOOP,i,4);
+				gl.drawElements(gl.LINE_LOOP,3,gl.UNSIGNED_SHORT,i)
 			}
 			else
-				gl.drawElements(gl.TRIANGLES,this.size,gl.UNSIGNED_BYTE,0)
+				gl.drawElements(gl.TRIANGLES,this.size,gl.UNSIGNED_SHORT,0)
 		}
 	}	
 
@@ -130,7 +141,7 @@ function createObject(varray,earray,carray,pos)
 	
 	obj.ebo = gl.createBuffer()
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj.ebo)
-	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint8Array(earray) , gl.STATIC_DRAW)
+	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(earray) , gl.STATIC_DRAW)
 
     // Associate out shader variables with our data buffer
 	gl.bindBuffer(gl.ARRAY_BUFFER,obj.vbo)
@@ -197,8 +208,6 @@ function addVertexFromMouse(event)
 function initGL()
 {
     canvas = document.getElementById( "gl-canvas" );
-	getSliders()
-	initUI()
     gl = WebGLUtils.setupWebGL( canvas );
     if ( !gl ) { alert( "WebGL isn't available" ); }
 	gl.enable(gl.DEPTH_TEST)
