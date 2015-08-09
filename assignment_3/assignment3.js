@@ -10,6 +10,46 @@ var uview,uproj,umodel;
 var view,proj;
 var wireframes = true
 var zValue = 0
+var selectedFigure = 1
+
+var figures = {
+	cube: 1,
+	sphere: 2,
+	cone: 3,
+	cilinder: 4
+}
+
+var camera = {
+	pos: [0,0,1.5],
+	center: [0,0,0],
+	up: [0,1,0],
+	pushMatrix: function(){
+		this.view = lookAt(
+				this.pos,
+				this.center,
+				this.up);
+
+		uview = gl.getUniformLocation(program,"view")
+		gl.uniformMatrix4fv(uview,false,flatten(this.view))
+
+		this.proj = perspective(70,canvas.width/canvas.height,100,0.1)
+
+		uproj = gl.getUniformLocation(program,"proj")
+		gl.uniformMatrix4fv(uproj,false,flatten(this.proj))
+	},
+
+	translate: function(x,y,z){
+		pos = [pos[0]+x,pos[1]+y,pos[2]+z]
+
+	}
+}
+
+function selectFigure(value)
+{
+	console.log("Selected figure is now " + value)
+	selectedFigure = value
+}
+
 
 
 function changeDepth(value)
@@ -45,7 +85,7 @@ function createObject(varray,earray,carray,pos)
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ebo)
 			if(wireframes)
 			{
-				for(i = 0; i < this.size ; i += 4)
+				for(var i = 0; i < this.size ; i += 4)
 					gl.drawArrays(gl.LINE_LOOP,i,4);
 			}
 			else
@@ -78,16 +118,6 @@ function createObject(varray,earray,carray,pos)
 		vColor = gl.getAttribLocation( program, "vColor")
 	gl.enableVertexAttribArray(vColor)
 
-	if(!uview)
-	{
-		uview = gl.getUniformLocation(program,"view")
-		gl.uniformMatrix4fv(uview,false,flatten(view))
-	}
-	if(!uproj)
-	{
-		uproj = gl.getUniformLocation(program,"proj")
-		gl.uniformMatrix4fv(uproj,false,flatten(proj))
-	}
 
 	if(!umodel)
 		umodel = gl.getUniformLocation(program,"model")
@@ -205,14 +235,9 @@ window.onload = function init()
 
 	})
 	canDraw = true
-	view = lookAt(
-			[0,0, 1.5],
-			[0,0,0],
-			[0,1,0]
-			);
+	
+	camera.pushMatrix()
 
-	console.log(canvas.width/canvas.height)
-	proj = perspective(70,canvas.width/canvas.height,25,0.1)
 	
 };
 
