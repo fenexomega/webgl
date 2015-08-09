@@ -12,6 +12,7 @@ var wireframes = true
 var zValue = 0
 var selectedFigure = 1
 var selectedColor = [0,1,1]
+var rotation_sliders = []
 
 var figures = {
 	cube: 1,
@@ -20,16 +21,19 @@ var figures = {
 	cilinder: 4
 }
 
+function transformSelectedObject()
+{
+	objects[objects.length-1].transform()
+}
+
 function changeColor(value)
 {
-	console.log(value)
 	selectedColor = [
 		parseInt("0x" + value.slice(1,3))/255,
 		parseInt("0x" + value.slice(3,5))/255,
 		parseInt("0x" + value.slice(5,7))/255,
 	]
 
-	console.log(selectedColor)
 }
 
 var camera = {
@@ -72,7 +76,9 @@ function changeDepth(value)
 
 function initGUI()
 {
-	
+	rotation_sliders.push(document.getElementById("rotx"))	
+	rotation_sliders.push(document.getElementById("roty"))	
+	rotation_sliders.push(document.getElementById("rotz"))	
 }
 
 function createObject(varray,earray,carray,pos)
@@ -85,6 +91,14 @@ function createObject(varray,earray,carray,pos)
 	var obj = { 
 		size: earray.length , 
 		model: m_model,
+		pos: pos,
+		transform: function(){
+				var rotx = rotate(rotation_sliders[0].value,[1,0,0])
+				var roty = rotate(rotation_sliders[1].value,[0,1,0])
+				var rotz = rotate(rotation_sliders[2].value,[0,0,1])
+				this.model = mult(rotz,mult(roty,rotx))
+				this.model = mult(translate(this.pos),this.model)
+		},
 		render: function(){
 			gl.uniformMatrix4fv(umodel,false,flatten(this.model))
 			// NOTE: como não há Vertex Array Object, 
@@ -138,19 +152,8 @@ function createObject(varray,earray,carray,pos)
 	return obj 
 }
 
-function initUI()
-{
-}
 
 
-function getSliders()
-{
-	sliders = []
-	sliders.push(document.getElementById("slidR"))
-	sliders.push(document.getElementById("slidG"))
-	sliders.push(document.getElementById("slidB"))
-	sliders.push(document.getElementById("slidLineWidth"))
-}
 
 function getHexString(number)
 {
@@ -213,6 +216,7 @@ function ifZero(value)
 window.onload = function init()
 {
 	initGL()
+	initGUI()
     //  Load shaders and initialize attribute buffers
     program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );

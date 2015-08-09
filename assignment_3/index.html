@@ -42,11 +42,24 @@ Oops ... your browser doesn't support the HTML5 canvas element
 </canvas>
 
 <div id="div_geoprops">
-<input type="range" value="0" min="0" max="15" step="1" onchange="changeDepth(value)">
-<input id="html5colorpicker" class="form-control" onchange="changeColor(value)" value="#ff0000" type="color">
+	Distance <br>
+	0
+	<input type="range" value="0" min="0" max="15" step="1" onchange="changeDepth(value)">
+	15
+	<div id="div_transform">
+		Rotation: <br>
+		<b>x</b>: 0<input type="range" value="0" min="0" max="360" step="1" oninput="transformSelectedObject()" id="rotx">360<br>
+		<b>y</b>: 0<input type="range" value="0" min="0" max="360" step="1" oninput="transformSelectedObject()" id="roty">360<br>
+		<b>z</b>: 0<input type="range" value="0" min="0" max="360" step="1" oninput="transformSelectedObject()" id="rotz">360<br>
+	</div>
+	<input id="html5colorpicker" class="form-control" onchange="changeColor(value)" value="#ff0000" type="color">
 </div>
+
 <div id="div_geochoose"></div>
-<button type="button" onclick="selectFigure(figures.cube);">Cube</button>
+	<button type="button" onclick="selectFigure(figures.cube);">Cube</button>
+	<button type="button" onclick="selectFigure(figures.sphere);">Sphere</button>
+	<button type="button" onclick="selectFigure(figures.cynlinder);">Cylinder</button>
+	<button type="button" onclick="selectFigure(figures.cone);">Cone</button>
 
 </div>
 </body></html>
