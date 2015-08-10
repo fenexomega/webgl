@@ -109,17 +109,17 @@ function createSphere(radius,color,pos)
 	  subdivideTriangle(m31,m23,p3,n);
 	}
 
-	subdivideTriangle([-1,0, 1],[0, 1,0],[ 1,0, 1],rp)
-	subdivideTriangle([ 1,0, 1],[0, 1,0],[ 1,0,-1],rp)
-	subdivideTriangle([ 1,0,-1],[0, 1,0],[-1,0,-1],rp)
-	subdivideTriangle([-1,0,-1],[0, 1,0],[-1,0, 1],rp)
-	subdivideTriangle([-1,0, 1],[0,-1,0],[ 1,0, 1],rp)
-	subdivideTriangle([ 1,0, 1],[0,-1,0],[ 1,0,-1],rp)
-	subdivideTriangle([ 1,0,-1],[0,-1,0],[-1,0,-1],rp)
-	subdivideTriangle([-1,0,-1],[0,-1,0],[-1,0, 1],rp)
+	subdivideTriangle([-radius,0, radius],[0, radius,0],[ radius,0, radius],rp)
+	subdivideTriangle([ radius,0, radius],[0, radius,0],[ radius,0,-radius],rp)
+	subdivideTriangle([ radius,0,-radius],[0, radius,0],[-radius,0,-radius],rp)
+	subdivideTriangle([-radius,0,-radius],[0, radius,0],[-radius,0, radius],rp)
+	subdivideTriangle([-radius,0, radius],[0,-radius,0],[ radius,0, radius],rp)
+	subdivideTriangle([ radius,0, radius],[0,-radius,0],[ radius,0,-radius],rp)
+	subdivideTriangle([ radius,0,-radius],[0,-radius,0],[-radius,0,-radius],rp)
+	subdivideTriangle([-radius,0,-radius],[0,-radius,0],[-radius,0, radius],rp)
 
 	for (var i = 0, len = varray.length; i < len; i++) 
-		varray[i] = normalize(varray[i])			
+		varray[i] = mult(normalize(varray[i]),[1/2,1/2,1/2])			
 
 	var obj = createObject(varray,earray,carray,pos)
 	objects.push(obj)

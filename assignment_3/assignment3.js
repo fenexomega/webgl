@@ -8,7 +8,7 @@ var objects = []
 var vPosition, vColor
 var uview,uproj,umodel;
 var view,proj;
-var wireframes = true
+var wireframes = false
 var zValue = 0
 var selectedFigure = 1
 var selectedColor = [0,1,1]
@@ -49,7 +49,7 @@ var camera = {
 		uview = gl.getUniformLocation(program,"view")
 		gl.uniformMatrix4fv(uview,false,flatten(this.view))
 
-		this.proj = perspective(70,canvas.width/canvas.height,100,0.1)
+		this.proj = perspective(70,canvas.width/canvas.height,0.1,50)
 
 		uproj = gl.getUniformLocation(program,"proj")
 		gl.uniformMatrix4fv(uproj,false,flatten(this.proj))
@@ -122,7 +122,6 @@ function createObject(varray,earray,carray,pos)
 			if(wireframes)
 			{
 				for(var i = 0; i < this.size*2 ; i += 3)
-			//		gl.drawArrays(gl.LINE_LOOP,i,4);
 				gl.drawElements(gl.LINE_LOOP,3,gl.UNSIGNED_SHORT,i)
 			}
 			else
@@ -210,7 +209,6 @@ function initGL()
     canvas = document.getElementById( "gl-canvas" );
     gl = WebGLUtils.setupWebGL( canvas );
     if ( !gl ) { alert( "WebGL isn't available" ); }
-	gl.enable(gl.DEPTH_TEST)
 	
 }
 
@@ -230,6 +228,8 @@ window.onload = function init()
     program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
     gl.viewport( 0, 0, canvas.width, canvas.height );
+	gl.enable(gl.DEPTH_TEST)
+	gl.depthFunc(gl.LESS);
 	
 	canvas.addEventListener("mousedown",function(event){
 		if(canDraw)
@@ -267,8 +267,7 @@ window.onload = function init()
 	
 	camera.pushMatrix()
 
-	render()
-	
+	render()	
 };
 
 
