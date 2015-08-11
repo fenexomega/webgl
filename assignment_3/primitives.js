@@ -117,17 +117,17 @@ function createSphere(radius,color,pos)
 	  subdivideTriangle(m31,m23,p3,n);
 	}
 
-	subdivideTriangle([-radius,0, radius],[0, radius,0],[ radius,0, radius],rp)
-	subdivideTriangle([ radius,0, radius],[0, radius,0],[ radius,0,-radius],rp)
-	subdivideTriangle([ radius,0,-radius],[0, radius,0],[-radius,0,-radius],rp)
-	subdivideTriangle([-radius,0,-radius],[0, radius,0],[-radius,0, radius],rp)
-	subdivideTriangle([-radius,0, radius],[0,-radius,0],[ radius,0, radius],rp)
-	subdivideTriangle([ radius,0, radius],[0,-radius,0],[ radius,0,-radius],rp)
-	subdivideTriangle([ radius,0,-radius],[0,-radius,0],[-radius,0,-radius],rp)
-	subdivideTriangle([-radius,0,-radius],[0,-radius,0],[-radius,0, radius],rp)
+	subdivideTriangle([-1,0, 1],[0, 1,0],[ 1,0, 1],rp)
+	subdivideTriangle([ 1,0, 1],[0, 1,0],[ 1,0,-1],rp)
+	subdivideTriangle([ 1,0,-1],[0, 1,0],[-1,0,-1],rp)
+	subdivideTriangle([-1,0,-1],[0, 1,0],[-1,0, 1],rp)
+	subdivideTriangle([-1,0, 1],[0,-1,0],[ 1,0, 1],rp)
+	subdivideTriangle([ 1,0, 1],[0,-1,0],[ 1,0,-1],rp)
+	subdivideTriangle([ 1,0,-1],[0,-1,0],[-1,0,-1],rp)
+	subdivideTriangle([-1,0,-1],[0,-1,0],[-1,0, 1],rp)
 
 	for (var i = 0, len = varray.length; i < len; i++) 
-		varray[i] = mult(normalize(varray[i]),[1/2,1/2,1/2])			
+		varray[i] = mult(normalize(varray[i]),[radius,radius,radius])			
 
 	var obj = createObject(varray,earray,carray,pos)
 	objects.push(obj)
@@ -158,6 +158,17 @@ function createCylinder(slices,color,pos)
 		carray.push(color)
 		earray.push(i)
 	}
+	
+	for(var i = 0; i < slices; i++)
+	{
+		earray.push(earray[1+i])
+		earray.push(earray[circle1.length+1+i])
+		earray.push(earray[circle1.length+2+i])
+
+		earray.push(earray[circle1.length+2+i])
+		earray.push(earray[2+i])
+		earray.push(earray[1+i])
+	}
 
 	var obj = createObject(varray,earray,carray,pos)
 	obj.fanSize = circle1.length 
@@ -181,6 +192,7 @@ function createCylinder(slices,color,pos)
 		{
 			gl.drawElements(gl.TRIANGLE_FAN,this.fanSize,gl.UNSIGNED_SHORT,0)
 			gl.drawElements(gl.TRIANGLE_FAN,this.fanSize,gl.UNSIGNED_SHORT,this.fanSize*2)
+			gl.drawElements(gl.TRIANGLES,this.fanSize*5,gl.UNSIGNED_SHORT,this.fanSize*2*2)
 		}
 	}
 	objects.push(obj)
