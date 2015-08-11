@@ -1,3 +1,8 @@
+var cubePrototype
+var spherePrototype
+var cylinderPrototype
+var conePrototype
+
 function createFigure(figureId,pos,color,size)
 {
 	switch(figureId)
@@ -8,11 +13,14 @@ function createFigure(figureId,pos,color,size)
 		case figures.sphere:
 			createSphere(size,color,pos)
 			break
+		case figures.cylinder:
+			createCylinder(16,color,pos)
 
 
 	}
 }
-
+// TODO reuse the vertex & index buffers!
+// TODO use the prototype pattern
 function createCube(cubeSize,cubeColor,cubePos)
 {
 	var varray = []
@@ -122,6 +130,59 @@ function createSphere(radius,color,pos)
 		varray[i] = mult(normalize(varray[i]),[1/2,1/2,1/2])			
 
 	var obj = createObject(varray,earray,carray,pos)
+	objects.push(obj)
+}
+
+function createCylinder(slices,color,pos)
+{
+
+	var varray = []
+	var carray = []
+	var earray = []
+	
+	var circle1 = []
+	var circle2 = []
+
+	circle1.push([0,1,0])
+	for(var i = 0; i <= 2*Math.PI; i += (2*Math.PI/slices) )
+		circle1.push([Math.cos(i),1,Math.sin(i)])
+	circle1.push([Math.cos(0),1,Math.sin(0)])
+
+	circle2.push([0,-1,0])
+	for(var i = 0; i <= 2*Math.PI; i += 2*Math.PI/slices )
+		circle2.push([Math.cos(i),-1,Math.sin(i)])
+	circle2.push([Math.cos(0),-1,Math.sin(0)])
+	
+	varray = varray.concat(circle1,circle2)	
+	for (var i = 0, len = varray.length; i < len; i++) {
+		carray.push(color)
+		earray.push(i)
+	}
+
+	var obj = createObject(varray,earray,carray,pos)
+	obj.fanSize = circle1.length 
+	obj.render = function()
+	{
+		gl.uniformMatrix4fv(umodel,false,flatten(this.model))
+		// NOTE: como não há Vertex Array Object, 
+		// eu tenho de sempre realocar os ponteiros para a placa de 
+		// video.
+		gl.bindBuffer(gl.ARRAY_BUFFER,this.vbo);
+		gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
+		gl.bindBuffer(gl.ARRAY_BUFFER,obj.cbo)
+		gl.vertexAttribPointer( vColor, 3, gl.FLOAT, false, 0,0);
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ebo)
+		if(wireframes)
+		{
+			for(var i = 0; i < this.size ; i += 3)
+			gl.drawElements(gl.LINE_LOOP,3,gl.UNSIGNED_SHORT,i*2)
+		}
+		else
+		{
+			gl.drawElements(gl.TRIANGLE_FAN,this.fanSize,gl.UNSIGNED_SHORT,0)
+			gl.drawElements(gl.TRIANGLE_FAN,this.fanSize,gl.UNSIGNED_SHORT,this.fanSize*2)
+		}
+	}
 	objects.push(obj)
 }
 

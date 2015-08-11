@@ -18,7 +18,17 @@ var figures = {
 	cube: 1,
 	sphere: 2,
 	cone: 3,
-	cilinder: 4
+	cylinder: 4
+}
+
+function clearObjects()
+{
+	objects = []
+}
+
+function setWireframe(element)
+{
+	wireframes = element.checked
 }
 
 function transformSelectedObject()
@@ -78,7 +88,6 @@ function resetGUI()
 {
 	for (var i = 0, len = rotation_sliders.length; i < len; i++) {
 		rotation_sliders[i].value = 0;
-		
 	}
 }
 
@@ -88,6 +97,8 @@ function initGUI()
 	rotation_sliders.push(document.getElementById("roty"))	
 	rotation_sliders.push(document.getElementById("rotz"))	
 	document.getElementById("distance").value = 0
+	document.getElementById("cbxWireframe").checked = false
+	document.getElementById("div_geochoose").childNodes[3].checked = true
 }
 
 function createObject(varray,earray,carray,pos)
@@ -121,8 +132,8 @@ function createObject(varray,earray,carray,pos)
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ebo)
 			if(wireframes)
 			{
-				for(var i = 0; i < this.size*2 ; i += 3)
-				gl.drawElements(gl.LINE_LOOP,3,gl.UNSIGNED_SHORT,i)
+				for(var i = 0; i < this.size ; i += 3)
+				gl.drawElements(gl.LINE_LOOP,3,gl.UNSIGNED_SHORT,i*2)
 			}
 			else
 				gl.drawElements(gl.TRIANGLES,this.size,gl.UNSIGNED_SHORT,0)
@@ -173,21 +184,6 @@ function getHexString(number)
 	return string
 }
 
-/*function changeColor()
-{
-	var value = 0
-	color = vec3(sliders[0].value/255,
-				 sliders[1].value/255,
-				 sliders[2].value/255)
-	for(var i = 0; i < 3; ++i)
-		value += Number(sliders[i].value) << 8*(2-i)
-	var colorString = "#" + getHexString(value)
-	console.log(colorString)
-	clCanvasCtx.fillStyle = colorString
-	clCanvasCtx.fillRect(0,0,64,64)
-
-}
-*/
 function getGLMousePosition(event)
 {
 	return [2*(event.clientX-canvas.offsetLeft)/canvas.width-1,
