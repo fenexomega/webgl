@@ -111,9 +111,19 @@ function createObject(varray,earray,color,pos)
 	
 	var obj = { 
 		size: earray.length , 
+		vsize: varray.length,
 		model: m_model,
 		pos: pos,
 		color: color,
+		renderWireframe: function(){
+				for(var i = 0; i < this.size ; i += 3)
+					gl.drawElements(gl.LINE_LOOP,3,gl.UNSIGNED_SHORT,i*2)
+		},
+		renderFull: function(){
+			gl.drawElements(gl.TRIANGLES,this.size,gl.UNSIGNED_SHORT,0)
+			gl.uniform3fv(ucolor,flatten([0,0,0]))
+			this.renderWireframe()
+		},
 		transform: function(){
 				var rotx = rotate(rotation_sliders[0].value,[1,0,0])
 				var roty = rotate(rotation_sliders[1].value,[0,1,0])
@@ -132,15 +142,11 @@ function createObject(varray,earray,color,pos)
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ebo)
 			if(wireframes)
 			{
-				for(var i = 0; i < this.size ; i += 3)
-					gl.drawElements(gl.LINE_LOOP,3,gl.UNSIGNED_SHORT,i*2)
+				this.renderWireframe()
 			}
 			else
 			{
-				gl.drawElements(gl.TRIANGLES,this.size,gl.UNSIGNED_SHORT,0)
-				gl.uniform3fv(ucolor,flatten([0,0,0]))
-				for(var i = 0; i < this.size ; i += 3)
-					gl.drawElements(gl.LINE_LOOP,3,gl.UNSIGNED_SHORT,i*2)
+				this.renderFull()
 			}
 		}
 	}	

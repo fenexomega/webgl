@@ -69,7 +69,13 @@ function createCube(cubeSize,cubeColor,cubePos)
 	for(var i = 0; i < varray.length; i+=4)
 		earray.push(i,i+1,i+2,i+2,i+3,i);
 	
+	
 	var obj = createObject(varray,earray,cubeColor,cubePos)
+	obj.renderWireframe = function()
+	{
+		for(var i = 0; i < this.vsize ; i += 4)
+			gl.drawArrays(gl.LINE_LOOP,i,4)
+	}
 	objects.push(obj)
 }
 
@@ -164,29 +170,11 @@ function createCylinder(slices,color,pos)
 
 	var obj = createObject(varray,earray,color,pos)
 	obj.fanSize = circle1.length 
-	obj.render = function()
+	obj.renderFull = function()
 	{
-		gl.uniformMatrix4fv(umodel,false,flatten(this.model))
-		// NOTE: como não há Vertex Array Object, 
-		// eu tenho de sempre realocar os ponteiros para a placa de 
-		// video.
-		gl.bindBuffer(gl.ARRAY_BUFFER,this.vbo);
-		gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
-		gl.bindBuffer(gl.ARRAY_BUFFER,obj.cbo)
-		gl.vertexAttribPointer( vColor, 3, gl.FLOAT, false, 0,0);
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ebo)
-		if(wireframes)
-		{
-			for(var i = 0; i < this.size ; i += 3)
-			gl.drawElements(gl.LINE_LOOP,3,gl.UNSIGNED_SHORT,i*2)
-				//TODO desenhar elementos com wireframe
-		}
-		else
-		{
 			gl.drawElements(gl.TRIANGLE_FAN,this.fanSize,gl.UNSIGNED_SHORT,0)
 			gl.drawElements(gl.TRIANGLE_FAN,this.fanSize,gl.UNSIGNED_SHORT,this.fanSize*2)
 			gl.drawElements(gl.TRIANGLES,this.fanSize*5,gl.UNSIGNED_SHORT,this.fanSize*2*2)
-		}
 	}
 	objects.push(obj)
 }
