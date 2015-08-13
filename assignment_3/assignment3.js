@@ -115,13 +115,16 @@ function createObject(varray,earray,color,pos)
 		model: m_model,
 		pos: pos,
 		color: color,
+		changeColor: function(vec3Color){
+			gl.uniform3fv(ucolor,flatten(vec3Color))
+		},
 		renderWireframe: function(){
 				for(var i = 0; i < this.size ; i += 3)
 					gl.drawElements(gl.LINE_LOOP,3,gl.UNSIGNED_SHORT,i*2)
 		},
 		renderFull: function(){
 			gl.drawElements(gl.TRIANGLES,this.size,gl.UNSIGNED_SHORT,0)
-			gl.uniform3fv(ucolor,flatten([0,0,0]))
+			this.changeColor([0,0,0])
 			this.renderWireframe()
 		},
 		transform: function(){
@@ -133,7 +136,7 @@ function createObject(varray,earray,color,pos)
 		},
 		render: function(){
 			gl.uniformMatrix4fv(umodel,false,flatten(this.model))
-			gl.uniform3fv(ucolor,flatten(this.color))
+			this.changeColor(color)
 			// NOTE: como não há Vertex Array Object, 
 			// eu tenho de sempre realocar os ponteiros para a placa de 
 			// video.

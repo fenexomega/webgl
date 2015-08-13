@@ -15,6 +15,10 @@ function createFigure(figureId,pos,color,size)
 			break
 		case figures.cylinder:
 			createCylinder(16,color,pos)
+			break
+		case figures.cone:
+			createCone(16,color,pos)
+			
 
 
 	}
@@ -157,7 +161,7 @@ function createCylinder(slices,color,pos)
 		earray.push(i)
 	}
 	
-	for(var i = 0; i < slices; i++)
+	for(var i = 0; i <= slices; i++)
 	{
 		earray.push(earray[1+i])
 		earray.push(earray[circle1.length+1+i])
@@ -174,7 +178,58 @@ function createCylinder(slices,color,pos)
 	{
 			gl.drawElements(gl.TRIANGLE_FAN,this.fanSize,gl.UNSIGNED_SHORT,0)
 			gl.drawElements(gl.TRIANGLE_FAN,this.fanSize,gl.UNSIGNED_SHORT,this.fanSize*2)
-			gl.drawElements(gl.TRIANGLES,this.fanSize*5,gl.UNSIGNED_SHORT,this.fanSize*2*2)
+			gl.drawElements(gl.TRIANGLES,(this.fanSize-1)*6,gl.UNSIGNED_SHORT,this.fanSize*2*2)
+			this.changeColor([0,0,0])
+			this.renderWireframe()
+	}
+	obj.renderWireframe = function(){
+		gl.drawElements(gl.LINE_LOOP,(this.fanSize-1.5)*6,gl.UNSIGNED_SHORT,this.fanSize*2*2)
+
+	}
+	objects.push(obj)
+}
+
+function createCone(slices,color,pos)
+{
+
+	var varray = []
+	var earray = []
+	
+	var circle1 = []
+	var circle2 = []
+
+	circle1.push([0,1,0])
+
+	circle2.push([0,-1,0])
+	for(var i = 0; i <= 2*Math.PI; i += 2*Math.PI/slices )
+		circle2.push([Math.cos(i),-1,Math.sin(i)])
+	circle2.push([Math.cos(0),-1,Math.sin(0)])
+	
+	varray = varray.concat(circle1,circle2)	
+	for (var i = 0, len = varray.length; i < len; i++) {
+		earray.push(i)
+	}
+	
+	for(var i = 0; i <= slices; i++)
+	{
+		earray.push(earray[0])
+		earray.push(earray[1+i])
+		earray.push(earray[2+i])
+
+	}
+
+	var obj = createObject(varray,earray,color,pos)
+	obj.fanSize = circle2.length 
+	obj.renderFull = function()
+	{
+			gl.drawElements(gl.TRIANGLE_FAN,this.fanSize,gl.UNSIGNED_SHORT,2)
+			gl.drawElements(gl.TRIANGLES,(this.fanSize-1)*3,gl.UNSIGNED_SHORT,8)
+			this.changeColor([0,0,0])
+			this.renderWireframe()
+	}
+	obj.renderWireframe = function(){
+		gl.drawElements(gl.LINE_LOOP,(this.fanSize-1.5)*3,gl.UNSIGNED_SHORT,this.fanSize)
+
 	}
 	objects.push(obj)
 }
