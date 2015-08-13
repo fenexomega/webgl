@@ -219,7 +219,7 @@ function initGL()
 	gl.depthFunc(gl.LESS);
 	
 	gl.enable(gl.POLYGON_OFFSET_FILL)
-	gl.polygonOffset(2,10)
+	gl.polygonOffset(2,2)
 	
 }
 

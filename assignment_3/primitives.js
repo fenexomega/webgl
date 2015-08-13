@@ -206,7 +206,8 @@ function createCone(slices,color,pos)
 	circle2.push([Math.cos(0),-1,Math.sin(0)])
 	
 	varray = varray.concat(circle1,circle2)	
-	for (var i = 0, len = varray.length; i < len; i++) {
+	for (var i = 0, len = varray.length; i < len; i++)
+	{
 		earray.push(i)
 	}
 	
@@ -223,13 +224,12 @@ function createCone(slices,color,pos)
 	obj.renderFull = function()
 	{
 			gl.drawElements(gl.TRIANGLE_FAN,this.fanSize,gl.UNSIGNED_SHORT,2)
-			gl.drawElements(gl.TRIANGLES,(this.fanSize-1)*3,gl.UNSIGNED_SHORT,8)
+			gl.drawElements(gl.TRIANGLES,(this.fanSize-1)*3,gl.UNSIGNED_SHORT,(this.fanSize+1)*2)
 			this.changeColor([0,0,0])
 			this.renderWireframe()
 	}
 	obj.renderWireframe = function(){
-		gl.drawElements(gl.LINE_LOOP,(this.fanSize-1.5)*3,gl.UNSIGNED_SHORT,this.fanSize)
-
+		gl.drawElements(gl.LINE_LOOP,(this.fanSize-2)*3,gl.UNSIGNED_SHORT,(this.fanSize+3)*2)
 	}
 	objects.push(obj)
 }
