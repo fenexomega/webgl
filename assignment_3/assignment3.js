@@ -6,7 +6,7 @@ var canvas;
 var sliders 
 var objects = []
 var vPosition, vColor
-var uview,uproj,umodel;
+var uview,uproj,umodel,ucolor
 var view,proj;
 var wireframes = false
 var zValue = 0
@@ -101,7 +101,7 @@ function initGUI()
 	document.getElementById("div_geochoose").childNodes[3].checked = true
 }
 
-function createObject(varray,earray,carray,pos)
+function createObject(varray,earray,color,pos)
 {
     // Load the data into the GPU
 	resetGUI()
@@ -113,6 +113,7 @@ function createObject(varray,earray,carray,pos)
 		size: earray.length , 
 		model: m_model,
 		pos: pos,
+		color: color,
 		transform: function(){
 				var rotx = rotate(rotation_sliders[0].value,[1,0,0])
 				var roty = rotate(rotation_sliders[1].value,[0,1,0])
@@ -122,21 +123,25 @@ function createObject(varray,earray,carray,pos)
 		},
 		render: function(){
 			gl.uniformMatrix4fv(umodel,false,flatten(this.model))
+			gl.uniform3fv(ucolor,flatten(this.color))
 			// NOTE: como não há Vertex Array Object, 
 			// eu tenho de sempre realocar os ponteiros para a placa de 
 			// video.
 			gl.bindBuffer(gl.ARRAY_BUFFER,this.vbo);
 			gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
-			gl.bindBuffer(gl.ARRAY_BUFFER,obj.cbo)
-			gl.vertexAttribPointer( vColor, 3, gl.FLOAT, false, 0,0);
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ebo)
 			if(wireframes)
 			{
 				for(var i = 0; i < this.size ; i += 3)
-				gl.drawElements(gl.LINE_LOOP,3,gl.UNSIGNED_SHORT,i*2)
+					gl.drawElements(gl.LINE_LOOP,3,gl.UNSIGNED_SHORT,i*2)
 			}
 			else
+			{
 				gl.drawElements(gl.TRIANGLES,this.size,gl.UNSIGNED_SHORT,0)
+				gl.uniform3fv(ucolor,flatten([0,0,0]))
+				for(var i = 0; i < this.size ; i += 3)
+					gl.drawElements(gl.LINE_LOOP,3,gl.UNSIGNED_SHORT,i*2)
+			}
 		}
 	}	
 
@@ -145,10 +150,6 @@ function createObject(varray,earray,carray,pos)
     gl.bindBuffer( gl.ARRAY_BUFFER, obj.vbo );
     gl.bufferData( gl.ARRAY_BUFFER, flatten(varray), gl.STATIC_DRAW );
 
-	obj.cbo = gl.createBuffer()
-	gl.bindBuffer(gl.ARRAY_BUFFER, obj.cbo)
-	gl.bufferData(gl.ARRAY_BUFFER,flatten(carray) , gl.STATIC_DRAW)
-	
 	obj.ebo = gl.createBuffer()
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj.ebo)
 	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(earray) , gl.STATIC_DRAW)
@@ -161,10 +162,9 @@ function createObject(varray,earray,carray,pos)
     gl.enableVertexAttribArray( vPosition );
 
 	gl.bindBuffer(gl.ARRAY_BUFFER,obj.cbo)
-	if(!vColor)
-		vColor = gl.getAttribLocation( program, "vColor")
-	gl.enableVertexAttribArray(vColor)
 
+	if(!ucolor)
+		ucolor = gl.getUniformLocation(program,"uColor")
 
 	if(!umodel)
 		umodel = gl.getUniformLocation(program,"model")
@@ -205,6 +205,12 @@ function initGL()
     canvas = document.getElementById( "gl-canvas" );
     gl = WebGLUtils.setupWebGL( canvas );
     if ( !gl ) { alert( "WebGL isn't available" ); }
+
+	gl.enable(gl.DEPTH_TEST)
+	gl.depthFunc(gl.LESS);
+	
+	gl.enable(gl.POLYGON_OFFSET_FILL)
+	gl.polygonOffset(2,10)
 	
 }
 
@@ -224,8 +230,6 @@ window.onload = function init()
     program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
     gl.viewport( 0, 0, canvas.width, canvas.height );
-	gl.enable(gl.DEPTH_TEST)
-	gl.depthFunc(gl.LESS);
 	
 	canvas.addEventListener("mousedown",function(event){
 		if(canDraw)

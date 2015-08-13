@@ -65,20 +65,17 @@ function createCube(cubeSize,cubeColor,cubePos)
 		[-cubeSize/2, cubeSize/2, cubeSize/2]
 	)	
 	
-	for(var i = 0; i < varray.length; ++i)
-		carray.push(cubeColor)
 	
 	for(var i = 0; i < varray.length; i+=4)
 		earray.push(i,i+1,i+2,i+2,i+3,i);
 	
-	var obj = createObject(varray,earray,carray,cubePos)
+	var obj = createObject(varray,earray,cubeColor,cubePos)
 	objects.push(obj)
 }
 
 function createSphere(radius,color,pos)
 {
 	var varray = []
-	var carray = []
 	var earray = []
 
 	var e = 0
@@ -92,17 +89,14 @@ function createSphere(radius,color,pos)
 		if(varray.indexOf(p1) == -1)
 		{
 			varray.push(p1)
-			carray.push(color)
 		}
 		if(varray.indexOf(p2) == -1)
 		{
 			varray.push(p2)
-			carray.push(color)
 		}
 		if(varray.indexOf(p3) == -1)
 		{
 			varray.push(p3)
-			carray.push(color)
 		}
 		earray.push(varray.indexOf(p1),varray.indexOf(p2),varray.indexOf(p3))
 		return;
@@ -129,7 +123,7 @@ function createSphere(radius,color,pos)
 	for (var i = 0, len = varray.length; i < len; i++) 
 		varray[i] = mult(normalize(varray[i]),[radius,radius,radius])			
 
-	var obj = createObject(varray,earray,carray,pos)
+	var obj = createObject(varray,earray,color,pos)
 	objects.push(obj)
 }
 
@@ -137,7 +131,6 @@ function createCylinder(slices,color,pos)
 {
 
 	var varray = []
-	var carray = []
 	var earray = []
 	
 	var circle1 = []
@@ -155,7 +148,6 @@ function createCylinder(slices,color,pos)
 	
 	varray = varray.concat(circle1,circle2)	
 	for (var i = 0, len = varray.length; i < len; i++) {
-		carray.push(color)
 		earray.push(i)
 	}
 	
@@ -170,7 +162,7 @@ function createCylinder(slices,color,pos)
 		earray.push(earray[1+i])
 	}
 
-	var obj = createObject(varray,earray,carray,pos)
+	var obj = createObject(varray,earray,color,pos)
 	obj.fanSize = circle1.length 
 	obj.render = function()
 	{
@@ -187,6 +179,7 @@ function createCylinder(slices,color,pos)
 		{
 			for(var i = 0; i < this.size ; i += 3)
 			gl.drawElements(gl.LINE_LOOP,3,gl.UNSIGNED_SHORT,i*2)
+				//TODO desenhar elementos com wireframe
 		}
 		else
 		{
