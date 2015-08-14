@@ -251,7 +251,7 @@ window.onload = function init()
 			//*****
 			//Doing some "magic numbers" to compessate the mouse position with the z-depth value
 			//Has something to do with the ratio of resolution, but hell if I knew
-			//how to explain this sorcery
+			//how to explain this sorcery.
 			pos = [pos[0]*(1+Math.abs(zValue)),
 					pos[1]*(Math.abs(zValue)*0.8+1/ifZero(-zValue)),
 					zValue];

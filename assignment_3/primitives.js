@@ -19,6 +19,7 @@ function createFigure(figureId,pos,color,size)
 			break
 		case figures.cone:
 			createCone(slices,size,color,pos)
+			break
 			
 
 
