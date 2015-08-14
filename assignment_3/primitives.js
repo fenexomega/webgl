@@ -2,6 +2,7 @@ var cubePrototype
 var spherePrototype
 var cylinderPrototype
 var conePrototype
+var slices = 32
 
 function createFigure(figureId,pos,color,size)
 {
@@ -14,10 +15,10 @@ function createFigure(figureId,pos,color,size)
 			createSphere(size,color,pos)
 			break
 		case figures.cylinder:
-			createCylinder(16,color,pos)
+			createCylinder(slices,size,color,pos)
 			break
 		case figures.cone:
-			createCone(16,color,pos)
+			createCone(slices,size,color,pos)
 			
 
 
@@ -137,7 +138,7 @@ function createSphere(radius,color,pos)
 	objects.push(obj)
 }
 
-function createCylinder(slices,color,pos)
+function createCylinder(slices,size,color,pos)
 {
 
 	var varray = []
@@ -158,6 +159,7 @@ function createCylinder(slices,color,pos)
 	
 	varray = varray.concat(circle1,circle2)	
 	for (var i = 0, len = varray.length; i < len; i++) {
+		varray[i] = mult(varray[i],[size,size,size])
 		earray.push(i)
 	}
 	
@@ -189,7 +191,7 @@ function createCylinder(slices,color,pos)
 	objects.push(obj)
 }
 
-function createCone(slices,color,pos)
+function createCone(slices,size,color,pos)
 {
 
 	var varray = []
@@ -208,6 +210,7 @@ function createCone(slices,color,pos)
 	varray = varray.concat(circle1,circle2)	
 	for (var i = 0, len = varray.length; i < len; i++)
 	{
+		varray[i] = mult(varray[i],[size,size,size])
 		earray.push(i)
 	}
 	
