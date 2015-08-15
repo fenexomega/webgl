@@ -45,6 +45,8 @@ function changeColor(value)
 		parseInt("0x" + value.slice(5,7))/255,
 	]
 
+	objects[objects.length-1].color = selectedColor
+
 }
 
 var camera = {
@@ -142,7 +144,7 @@ function createObject(varray,earray,color,pos)
 		},
 		render: function(){
 			gl.uniformMatrix4fv(umodel,false,flatten(this.model))
-			this.changeColor(color)
+			this.changeColor(this.color)
 			// NOTE: como não há Vertex Array Object, 
 			// eu tenho de sempre realocar os ponteiros para a placa de 
 			// video.
