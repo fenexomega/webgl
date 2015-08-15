@@ -13,6 +13,7 @@ var zValue = 0
 var selectedFigure = 1
 var selectedColor = [0,1,1]
 var rotation_sliders = []
+var scale_slider 
 
 var figures = {
 	cube: 1,
@@ -89,6 +90,7 @@ function resetGUI()
 	for (var i = 0, len = rotation_sliders.length; i < len; i++) {
 		rotation_sliders[i].value = 0;
 	}
+	scale_slider.value = 0
 }
 
 function initGUI()
@@ -99,6 +101,7 @@ function initGUI()
 	document.getElementById("distance").value = 0
 	document.getElementById("cbxWireframe").checked = false
 	document.getElementById("div_geochoose").childNodes[3].checked = true
+	scale_slider = document.getElementById("scaletotal")
 }
 
 function createObject(varray,earray,color,pos)
@@ -128,10 +131,12 @@ function createObject(varray,earray,color,pos)
 			this.renderWireframe()
 		},
 		transform: function(){
+				this.model = scalem(scale_slider.value,
+						scale_slider.value,scale_slider.value)
 				var rotx = rotate(rotation_sliders[0].value,[1,0,0])
 				var roty = rotate(rotation_sliders[1].value,[0,1,0])
 				var rotz = rotate(rotation_sliders[2].value,[0,0,1])
-				this.model = mult(rotz,mult(roty,rotx))
+				this.model = mult(rotz,mult(roty,mult(rotx,this.model)))
 				this.model = mult(translate(this.pos),this.model)
 		},
 		render: function(){
