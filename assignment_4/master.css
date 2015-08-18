@@ -1,0 +1,22 @@
+#tools
+{
+	left:810px;
+	top: 10px;
+	border: 1px solid #fff;
+	position:fixed;
+}
+
+#help_text
+{
+	left: 810px;
+	top: 400px;
+	position: fixed;
+
+}
+
+#div_transform
+{
+	margin-left: 50px;
+	border-bottom: 1px solid #999;
+}
+
