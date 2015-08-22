@@ -7,6 +7,21 @@ uniform vec3 uColor;
 uniform mat4 view,model,proj;
 uniform float angle;
 varying vec4 Color;
+// TODO send light data to GPU
+// do it in a way for having
+// a variable amount of lights.
+// declare an int for storing the
+// currently amount of lights.
+uniform int amtOfLights;
+int maxAmtOfLights = 16;
+
+struct Material
+{
+	vec3 ambient;
+	vec3 difuse;
+	vec3 specular;
+	float shininess;
+};
 
 void main()
 {
@@ -21,6 +36,7 @@ varying vec4 Color;
 
 void main()
 {
+//TODO do the phong shading model
     gl_FragColor = Color;
 }
 </script>
@@ -31,7 +47,7 @@ void main()
 <script type="text/javascript" src="initShaders.js"></script>
 <script type="text/javascript" src="flatten.js"></script>
 <script src="objects.js" type="text/javascript" charset="utf-8"></script>
-<script type="text/javascript" src="assignment4.js"></script>
+<script type="text/javascript" src="assignmen44.js"></script>
 <script type="text/javascript" src="primitives.js"></script>
 <link rel="stylesheet" href="../css/stylesheet.css">
 <link rel="stylesheet" href="master.css">
