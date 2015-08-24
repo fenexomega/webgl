@@ -1,3 +1,4 @@
+var vPosition, vNormal
 
 var camera = {
 	pos: [0,0,1.5],
@@ -24,7 +25,7 @@ var camera = {
 	}
 }
 
-function createObject(varray,earray,color,pos)
+function createObject(varray,earray,narray,color,pos)
 {
     // Load the data into the GPU
 	resetGUI()
@@ -68,6 +69,8 @@ function createObject(varray,earray,color,pos)
 			gl.bindBuffer(gl.ARRAY_BUFFER,this.vbo);
 			gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ebo)
+			gl.bindBuffer(gl.ARRAY_BUFFER,this.nbo)
+			gl.vertexAttribPointer(vNormal, 3, gl.FLOAT, false, 0,0)
 			if(wireframes)
 			{
 				this.renderWireframe()
@@ -88,14 +91,20 @@ function createObject(varray,earray,color,pos)
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj.ebo)
 	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(earray) , gl.STATIC_DRAW)
 
-    // Associate out shader variables with our data buffer
+	obj.nbo = gl.createBuffer()
+	gl.bindBuffer(gl.ARRAY_BUFFER, obj.nbo)
+	gl.bufferData(gl.ARRAY_BUFFER,flatten(narray),gl.STATIC_DRAW)
+
 	gl.bindBuffer(gl.ARRAY_BUFFER,obj.vbo)
 
     if(!vPosition)
 		vPosition = gl.getAttribLocation( program, "vPosition" );
     gl.enableVertexAttribArray( vPosition );
 
-	gl.bindBuffer(gl.ARRAY_BUFFER,obj.cbo)
+	if(!vNormal)
+		vNormal = gl.getAttribLocation( program,"vNormal")
+	gl.enableVertexAttribArray(vNormal)
+
 
 	if(!ucolor)
 		ucolor = gl.getUniformLocation(program,"uColor")

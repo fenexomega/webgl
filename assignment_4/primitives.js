@@ -4,6 +4,20 @@ var cylinderPrototype
 var conePrototype
 var slices = 32
 
+function calculeNormals(varray)
+{
+	var narray = []
+	for(var i = 0; i < varray.length -3 ; ++i)
+	{
+		var p1 = subtract(varray[i+1],varray[i])
+		var p2 = subtract(varray[i+2],varray[i])
+		var normal = cross(p1,p2)
+		for(var z = 0; z < 3; ++z)
+			narray.push(normal)
+	}
+	return narray
+}
+
 function createFigure(figureId,pos,color,size)
 {
 	switch(figureId)
@@ -32,51 +46,109 @@ function createCube(cubeSize,cubeColor,cubePos)
 	var varray = []
 	var carray = []
 	var earray = []
+	var narray = []
 
 	varray.push(
 		//FRONT
 		[-cubeSize/2, cubeSize/2,cubeSize/2],
 		[-cubeSize/2,-cubeSize/2,cubeSize/2],
 		[ cubeSize/2,-cubeSize/2,cubeSize/2],
+
+		[ cubeSize/2,-cubeSize/2,cubeSize/2],
 		[ cubeSize/2, cubeSize/2,cubeSize/2],
+		[-cubeSize/2, cubeSize/2,cubeSize/2],
 
 		//BACK
 		[cubeSize/2, cubeSize/2,-cubeSize/2],
 		[cubeSize/2,-cubeSize/2,-cubeSize/2],
 		[-cubeSize/2,-cubeSize/2,-cubeSize/2],
+
+		[-cubeSize/2,-cubeSize/2,-cubeSize/2],
 		[-cubeSize/2, cubeSize/2,-cubeSize/2],
+		[cubeSize/2, cubeSize/2,-cubeSize/2],
 
 		//UP
 		[ cubeSize/2, cubeSize/2, cubeSize/2],
 		[ cubeSize/2, cubeSize/2,-cubeSize/2],
 		[-cubeSize/2, cubeSize/2,-cubeSize/2],
+
+		[-cubeSize/2, cubeSize/2,-cubeSize/2],
 		[-cubeSize/2, cubeSize/2, cubeSize/2],
+		[ cubeSize/2, cubeSize/2, cubeSize/2],
 
 		//DOWN
 		[-cubeSize/2,-cubeSize/2, cubeSize/2],
 		[-cubeSize/2,-cubeSize/2,-cubeSize/2],
 		[ cubeSize/2,-cubeSize/2,-cubeSize/2],
+
+		[ cubeSize/2,-cubeSize/2,-cubeSize/2],
 		[ cubeSize/2,-cubeSize/2, cubeSize/2],
+		[-cubeSize/2,-cubeSize/2, cubeSize/2],
 
 		//RIGHT
 		[ cubeSize/2, cubeSize/2, cubeSize/2],
 		[ cubeSize/2,-cubeSize/2, cubeSize/2],
 		[ cubeSize/2,-cubeSize/2,-cubeSize/2],
+
+		[ cubeSize/2,-cubeSize/2,-cubeSize/2],
 		[ cubeSize/2, cubeSize/2,-cubeSize/2],
+		[ cubeSize/2, cubeSize/2, cubeSize/2],
 
 		//LEFT
 		[-cubeSize/2, cubeSize/2,-cubeSize/2],
 		[-cubeSize/2,-cubeSize/2,-cubeSize/2],
 		[-cubeSize/2,-cubeSize/2, cubeSize/2],
-		[-cubeSize/2, cubeSize/2, cubeSize/2]
+
+		[-cubeSize/2,-cubeSize/2, cubeSize/2],
+		[-cubeSize/2, cubeSize/2, cubeSize/2],
+		[-cubeSize/2, cubeSize/2,-cubeSize/2]
 	)	
+
 	
+
+	narray.push(
+		//FRONT
+		[-0, 0,1],
+		[-0,-0,1],
+		[ 0,-0,1],
+		[ 0, 0,1],
+
+		//BACK
+		[ 0, 0,-1],
+		[ 0, 0,-1],
+		[ 0, 0,-1],
+		[ 0, 0,-1],
+
+		//UP
+		[ 0, 1, 0],
+		[ 0, 1,-0],
+		[-0, 1,-0],
+		[-0, 1, 0],
+
+		//DOWN
+		[-0,-1, 0],
+		[-0,-1,-0],
+		[ 0,-1,-0],
+		[ 0,-1, 0],
+
+		//RIGHT
+		[ 1, 0, 0],
+		[ 1,-0, 0],
+		[ 1,-0,-0],
+		[ 1, 0,-0],
+
+		//LEFT
+		[-1, 0,-0],
+		[-1,-0,-0],
+		[-1,-0, 0],
+		[-1, 0, 0]
+	)	
 	
 	for(var i = 0; i < varray.length; i+=4)
 		earray.push(i,i+1,i+2,i+2,i+3,i);
 	
 	
-	var obj = createObject(varray,earray,cubeColor,cubePos)
+	var obj = createObject(varray,earray,narray,cubeColor,cubePos)
 	obj.renderWireframe = function()
 	{
 		for(var i = 0; i < this.vsize ; i += 4)
@@ -89,6 +161,7 @@ function createSphere(radius,color,pos)
 {
 	var varray = []
 	var earray = []
+	var narray = []
 
 	var e = 0
 	var rp = 3
@@ -133,9 +206,12 @@ function createSphere(radius,color,pos)
 	subdivideTriangle([-1,0,-1],[0,-1,0],[-1,0, 1],rp)
 
 	for (var i = 0, len = varray.length; i < len; i++) 
-		varray[i] = mult(normalize(varray[i]),[radius,radius,radius])			
-
-	var obj = createObject(varray,earray,color,pos)
+	{
+		var norm_vec = normalize(varray[i])
+		varray[i] = mult(norm_vec,[radius,radius,radius])			
+		narray.push(norm_vec)
+	}
+	var obj = createObject(varray,earray,narray,color,pos)
 	objects.push(obj)
 }
 
@@ -144,6 +220,7 @@ function createCylinder(slices,size,color,pos)
 
 	var varray = []
 	var earray = []
+	var narray = []
 	
 	var circle1 = []
 	var circle2 = []
@@ -175,7 +252,7 @@ function createCylinder(slices,size,color,pos)
 		earray.push(earray[1+i])
 	}
 
-	var obj = createObject(varray,earray,color,pos)
+	var obj = createObject(varray,earray,narray,color,pos)
 	obj.fanSize = circle1.length 
 	obj.renderFull = function()
 	{
@@ -197,6 +274,7 @@ function createCone(slices,size,color,pos)
 
 	var varray = []
 	var earray = []
+	var narray = []
 	
 	var circle1 = []
 	var circle2 = []
@@ -223,7 +301,7 @@ function createCone(slices,size,color,pos)
 
 	}
 
-	var obj = createObject(varray,earray,color,pos)
+	var obj = createObject(varray,earray,narray,color,pos)
 	obj.fanSize = circle2.length 
 	obj.renderFull = function()
 	{

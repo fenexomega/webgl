@@ -5,7 +5,6 @@ var vertices = []
 var canvas;
 var sliders 
 var objects = []
-var vPosition, vColor
 var uview,uproj,umodel,ucolor
 var view,proj;
 var wireframes = false
