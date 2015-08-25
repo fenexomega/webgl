@@ -93,18 +93,19 @@ vec4 pointLight(LightSource light)
 vec4 dirLight(LightSource light)
 {
 		
+	vec3 lightPos = normalize(-light.position);
 	vec3 ambient,diffuse,specular;
 
 	//ambient calculation
 	ambient = light.color * light.ambientStr;
 
 	//diffuse calculation
-	float diff = max(dot(outNormal,light.position),0.0);
-	diffuse = light.color * diff;
+	float diff = max(dot(outNormal,lightPos),0.0);
+	diffuse = 0.5 * light.color * diff;
 
 	//specular
 	vec3 viewDir = normalize(viewLocation - vertexPos);
-	vec3 reflectedDir = reflect(-light.position,outNormal);
+	vec3 reflectedDir = reflect(-lightPos,outNormal);
 	//TODO change this 32 value to the material.shininess
 	float spec = pow(max(dot(viewDir,reflectedDir),0.0),128.0);
 	specular = light.specularStr * light.color * spec;

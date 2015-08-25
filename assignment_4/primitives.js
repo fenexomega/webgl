@@ -7,7 +7,7 @@ var slices = 32
 function calculeNormals(varray)
 {
 	var narray = []
-	for(var i = 0; i < varray.length -3 ; ++i)
+	for(var i = 0; i < varray.length  ; i+=3)
 	{
 		var p1 = subtract(varray[i+1],varray[i])
 		var p2 = subtract(varray[i+2],varray[i])
@@ -54,54 +54,54 @@ function createCube(cubeSize,cubeColor,cubePos)
 		[-cubeSize/2,-cubeSize/2,cubeSize/2],
 		[ cubeSize/2,-cubeSize/2,cubeSize/2],
 
+		[-cubeSize/2, cubeSize/2,cubeSize/2],
 		[ cubeSize/2,-cubeSize/2,cubeSize/2],
 		[ cubeSize/2, cubeSize/2,cubeSize/2],
-		[-cubeSize/2, cubeSize/2,cubeSize/2],
 
 		//BACK
 		[cubeSize/2, cubeSize/2,-cubeSize/2],
 		[cubeSize/2,-cubeSize/2,-cubeSize/2],
 		[-cubeSize/2,-cubeSize/2,-cubeSize/2],
 
+		[cubeSize/2, cubeSize/2,-cubeSize/2],
 		[-cubeSize/2,-cubeSize/2,-cubeSize/2],
 		[-cubeSize/2, cubeSize/2,-cubeSize/2],
-		[cubeSize/2, cubeSize/2,-cubeSize/2],
 
 		//UP
 		[ cubeSize/2, cubeSize/2, cubeSize/2],
 		[ cubeSize/2, cubeSize/2,-cubeSize/2],
 		[-cubeSize/2, cubeSize/2,-cubeSize/2],
 
+		[ cubeSize/2, cubeSize/2, cubeSize/2],
 		[-cubeSize/2, cubeSize/2,-cubeSize/2],
 		[-cubeSize/2, cubeSize/2, cubeSize/2],
-		[ cubeSize/2, cubeSize/2, cubeSize/2],
 
 		//DOWN
 		[-cubeSize/2,-cubeSize/2, cubeSize/2],
 		[-cubeSize/2,-cubeSize/2,-cubeSize/2],
 		[ cubeSize/2,-cubeSize/2,-cubeSize/2],
 
+		[-cubeSize/2,-cubeSize/2, cubeSize/2],
 		[ cubeSize/2,-cubeSize/2,-cubeSize/2],
 		[ cubeSize/2,-cubeSize/2, cubeSize/2],
-		[-cubeSize/2,-cubeSize/2, cubeSize/2],
 
 		//RIGHT
 		[ cubeSize/2, cubeSize/2, cubeSize/2],
 		[ cubeSize/2,-cubeSize/2, cubeSize/2],
 		[ cubeSize/2,-cubeSize/2,-cubeSize/2],
 
+		[ cubeSize/2, cubeSize/2, cubeSize/2],
 		[ cubeSize/2,-cubeSize/2,-cubeSize/2],
 		[ cubeSize/2, cubeSize/2,-cubeSize/2],
-		[ cubeSize/2, cubeSize/2, cubeSize/2],
 
 		//LEFT
 		[-cubeSize/2, cubeSize/2,-cubeSize/2],
 		[-cubeSize/2,-cubeSize/2,-cubeSize/2],
 		[-cubeSize/2,-cubeSize/2, cubeSize/2],
 
+		[-cubeSize/2, cubeSize/2,-cubeSize/2],
 		[-cubeSize/2,-cubeSize/2, cubeSize/2],
-		[-cubeSize/2, cubeSize/2, cubeSize/2],
-		[-cubeSize/2, cubeSize/2,-cubeSize/2]
+		[-cubeSize/2, cubeSize/2, cubeSize/2]
 	)	
 
 	
