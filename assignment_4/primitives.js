@@ -11,7 +11,7 @@ function calculeNormals(varray)
 	{
 		var p1 = subtract(varray[i+1],varray[i])
 		var p2 = subtract(varray[i+2],varray[i])
-		var normal = cross(p1,p2)
+		var normal = normalize(cross(p1,p2))
 		for(var z = 0; z < 3; ++z)
 			narray.push(normal)
 	}

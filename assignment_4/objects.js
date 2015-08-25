@@ -47,7 +47,8 @@ function createObject(varray,earray,narray,color,pos)
 					gl.drawElements(gl.LINE_LOOP,3,gl.UNSIGNED_SHORT,i*2)
 		},
 		renderFull: function(){
-			gl.drawElements(gl.TRIANGLES,this.size,gl.UNSIGNED_SHORT,0)
+		//	gl.drawElements(gl.TRIANGLES,this.size,gl.UNSIGNED_SHORT,0)
+			gl.drawArrays(gl.TRIANGLES,0,this.vsize)
 			this.changeColor([0,0,0])
 			this.renderWireframe()
 		},
@@ -60,7 +61,8 @@ function createObject(varray,earray,narray,color,pos)
 				this.model = mult(rotz,mult(roty,mult(rotx,this.model)))
 				this.model = mult(translate(this.pos),this.model)
 		},
-		render: function(){
+		render: function()
+		{
 			gl.uniformMatrix4fv(umodel,false,flatten(this.model))
 			this.changeColor(this.color)
 			// NOTE: como não há Vertex Array Object, 
