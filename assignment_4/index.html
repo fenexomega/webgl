@@ -30,7 +30,7 @@ void main()
 {
 	Color = vec4(uColor,1.0);
 	//To transform the normals accordly to the model matrix
-	outNormal = normalize(transpose((model))*vNormal).xyz;
+	outNormal = normalize(model*vNormal).xyz;
 	vertexPos = vec3(model * vec4(vPosition));
 	gl_Position =  proj*view*model* vPosition;
 }
@@ -106,36 +106,34 @@ vec4 dirLight(LightSource light)
 	vec3 viewDir = normalize(viewLocation - vertexPos);
 	vec3 reflectedDir = reflect(-light.position,outNormal);
 	//TODO change this 32 value to the material.shininess
-	float spec = pow(max(dot(viewDir,reflectedDir),0.0),32.0);
+	float spec = pow(max(dot(viewDir,reflectedDir),0.0),128.0);
 	specular = light.specularStr * light.color * spec;
-
-	return vec4(light.color,1.0);
 
 	return vec4(ambient + diffuse + specular,1.0);
 }
 
 void main()
 {
-	vec4 result = Color;
+	vec4 result = vec4(0.0);
 	//workround for using variable loops
 	//
 	for(int i = 0; i < maxAmtOfLights; ++i)
 	{
-		if(i < amtOfLights)
-		{
+		if(i == amtOfLights)
+			break;
 			if(Lights[i].type == LIG_DIRECTION)
 			{
-				result *= dirLight(Lights[i]);
+				result += dirLight(Lights[i]);
 			}
 	//		case LIG_POINT:
 	//			Color *= pointLight(Lights[i]); break;
 	//		case LIG_SPOT:
 	//			Color *= spotLight(lights[i]); break;
-		}
-		else
-			break;
 	}
-    gl_FragColor = result;
+	if(amtOfLights == 0)
+		gl_FragColor = Color;
+	else
+		gl_FragColor = Color*result;
 }
 </script>
 
@@ -174,8 +172,6 @@ Oops ... your browser doesn't support the HTML5 canvas element
 				<b>x</b>: 0<input type="range" value="0" min="0" max="360" step="1" oninput="transformSelectedObject()" id="rotx">360<br>
 				<b>y</b>: 0<input type="range" value="0" min="0" max="360" step="1" oninput="transformSelectedObject()" id="roty">360<br>
 				<b>z</b>: 0<input type="range" value="0" min="0" max="360" step="1" oninput="transformSelectedObject()" id="rotz">360<br>
-				Scale: <br>
-				<input type="range" name="scale" id="scaletotal" value="1" max="10" min="0.1" step="0.1" oninput="transformSelectedObject()" />
 			</div>
 		</div>
 		<div id="etc">

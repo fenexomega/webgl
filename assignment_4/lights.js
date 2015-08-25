@@ -23,6 +23,8 @@ function createAmbientLight(v3Direction,fAmbientStr,fSpecularStr,v3Color)
 			fAmbientStr,fSpecularStr,v3Color)
 }
 
+// x = createAmbientLight([0,1,0],0.3,0.6,[1,1,1])
+
 function createLight(iType, v3Position,fAmbientStr,fSpecularStr,v3Color)
 {
 	uAmtOfLights = gl.getUniformLocation(program,"amtOfLights")
@@ -39,7 +41,7 @@ function createLight(iType, v3Position,fAmbientStr,fSpecularStr,v3Color)
 			{
 				var attrib = structAttribs[i]
 				this.uniformIndex = gl.getUniformLocation(program,
-						"Lights["+this.index+"]."+name)
+						"Lights["+this.index+"]."+attrib)
 				
 				if(Array.isArray(light[attrib]))
 				{
@@ -57,7 +59,7 @@ function createLight(iType, v3Position,fAmbientStr,fSpecularStr,v3Color)
 	}	
 	lights.push(light)
 	gl.uniform1i(uAmtOfLights,lights.length)
-	light.update
+	light.update()
 	return light
 	
 }

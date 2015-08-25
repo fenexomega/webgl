@@ -135,19 +135,11 @@ function createSphere(radius,color,pos)
 	  if(n ==  0)
 	  {
 		var e1,e2,e3
-		if(varray.indexOf(p1) == -1)
-		{
+	
 			varray.push(p1)
-		}
-		if(varray.indexOf(p2) == -1)
-		{
 			varray.push(p2)
-		}
-		if(varray.indexOf(p3) == -1)
-		{
 			varray.push(p3)
-		}
-		earray.push(varray.indexOf(p1),varray.indexOf(p2),varray.indexOf(p3))
+		earray.push(e++,e++,e++)
 		return;
 	  }
 	  var m12 = mix(p1,p2,0.5);

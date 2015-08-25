@@ -65,7 +65,6 @@ function resetGUI()
 	for (var i = 0, len = rotation_sliders.length; i < len; i++) {
 		rotation_sliders[i].value = 0;
 	}
-	scale_slider.value = 1
 }
 
 function initGUI()
@@ -77,7 +76,6 @@ function initGUI()
 	document.getElementById("cbxWireframe").checked = false
 	document.getElementById("div_geochoose").childNodes[3].checked = true
 	document.getElementById("html5colorpicker").value = "#00FFFF"
-	scale_slider = document.getElementById("scaletotal")
 }
 
 

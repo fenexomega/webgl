@@ -53,11 +53,10 @@ function createObject(varray,earray,narray,color,pos)
 		//	gl.drawElements(gl.TRIANGLES,this.size,gl.UNSIGNED_SHORT,0)
 			gl.drawArrays(gl.TRIANGLES,0,this.vsize)
 			this.changeColor([0,0,0])
-			this.renderWireframe()
+//			this.renderWireframe()
 		},
 		transform: function(){
-				this.model = scalem(scale_slider.value,
-						scale_slider.value,scale_slider.value)
+				this.model = scalem(1.0,1.0,1.0)
 				var rotx = rotate(rotation_sliders[0].value,[1,0,0])
 				var roty = rotate(rotation_sliders[1].value,[0,1,0])
 				var rotz = rotate(rotation_sliders[2].value,[0,0,1])
