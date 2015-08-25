@@ -3,7 +3,7 @@
 <meta http-equiv="content-type" content="text/html; charset=windows-1252">
 <script id="vertex-shader" type="x-shader/x-vertex">
 attribute vec4 vPosition;
-attribute vec3 vNormal;
+attribute vec4 vNormal;
 uniform vec3 uColor; 
 uniform mat4 view,model,proj;
 
@@ -11,19 +11,40 @@ varying vec4 Color;
 varying vec3 outNormal;
 varying vec3 vertexPos;
 
+mat4 transpose(mat4 inMatrix) {
+	 vec4 i0 = inMatrix[0];
+	 vec4 i1 = inMatrix[1];
+	 vec4 i2 = inMatrix[2];
+	 vec4 i3 = inMatrix[3];
+
+	 mat4 outMatrix = mat4(
+					 vec4(i0.x, i1.x, i2.x, i3.x),
+					 vec4(i0.y, i1.y, i2.y, i3.y),
+					 vec4(i0.z, i1.z, i2.z, i3.z),
+					 vec4(i0.w, i1.w, i2.w, i3.w)
+					 );
+	return outMatrix;
+}
 
 void main()
 {
 	Color = vec4(uColor,1.0);
 	//To transform the normals accordly to the model matrix
-	outNormal = normalize(transpose(inverse(model))*vNormal);
-	vertexPos = vec3(model * vec4(vPosition,1.0));
+	outNormal = normalize(transpose((model))*vNormal).xyz;
+	vertexPos = vec3(model * vec4(vPosition));
 	gl_Position =  proj*view*model* vPosition;
 }
 </script>
 
 <script id="fragment-shader" type="x-shader/x-fragment">
 precision mediump float;
+
+#define LIG_DIRECTION 	0
+#define LIG_POINT 	  	1
+#define LIG_SPOT 	  	2
+
+uniform vec3 viewLocation;
+
 varying vec4 Color;
 varying vec3 outNormal;
 varying vec3 vertexPos;
@@ -47,22 +68,74 @@ uniform int amtOfLights;
 struct LightSource
 {
 	int type;
-	vec3 ambient;
-	vec3 difuse;
+	float ambientStr;
+	float specularStr;
+
 	vec3 specular;
 	vec3 position;
+	vec3 color;
 };
 
 uniform LightSource Lights[maxAmtOfLights];
 
+vec4 spotLight(LightSource light)
+{
+	//TODO
+	return vec4(1.0);
+}
+
+vec4 pointLight(LightSource light)
+{
+	//TODO
+	return vec4(1.0);
+}
+
+vec4 dirLight(LightSource light)
+{
+		
+	vec3 ambient,diffuse,specular;
+
+	//ambient calculation
+	ambient = light.color * light.ambientStr;
+
+	//diffuse calculation
+	float diff = max(dot(outNormal,light.position),0.0);
+	diffuse = light.color * diff;
+
+	//specular
+	vec3 viewDir = normalize(viewLocation - vertexPos);
+	vec3 reflectedDir = reflect(-light.position,outNormal);
+	//TODO change this 32 value to the material.shininess
+	float spec = pow(max(dot(viewDir,reflectedDir),0.0),32.0);
+	specular = light.specularStr * light.color * spec;
+
+	return vec4(light.color,1.0);
+
+	return vec4(ambient + diffuse + specular,1.0);
+}
+
 void main()
 {
-//TODO do the phong shading model
-	for(int i = 0; i < amtofLights; ++i)
+	vec4 result = Color;
+	//workround for using variable loops
+	//
+	for(int i = 0; i < maxAmtOfLights; ++i)
 	{
-			
+		if(i < amtOfLights)
+		{
+			if(Lights[i].type == LIG_DIRECTION)
+			{
+				result *= dirLight(Lights[i]);
+			}
+	//		case LIG_POINT:
+	//			Color *= pointLight(Lights[i]); break;
+	//		case LIG_SPOT:
+	//			Color *= spotLight(lights[i]); break;
+		}
+		else
+			break;
 	}
-    gl_FragColor = Color;
+    gl_FragColor = result;
 }
 </script>
 
@@ -75,6 +148,10 @@ void main()
 <script type="text/javascript" src="assignment4.js"></script>
 <script type="text/javascript" src="primitives.js"></script>
 <script src="objects.js" type="text/javascript" charset="utf-8"></script>
+<script src="lights.js" type="text/javascript" charset="utf-8"></script>
+
+
+
 <link rel="stylesheet" href="../css/stylesheet.css">
 <link rel="stylesheet" href="master.css">
 </head>
