@@ -230,7 +230,16 @@ function createCylinder(slices,size,color,pos)
 
 	var circle_vertices = circle1.length*2
 	var	sub_varray = clone(varray).slice(circle_vertices)
-	narray = narray.concat(calculeNormals(sub_varray))
+	//TODO: a bug is happening here. The normals are
+	// inverted. e.g: it should be [0,1,0], but is [0,-1,0]
+	var aux = calculeNormals(sub_varray)
+	
+	for(var i = 0; i < aux.length; ++i)
+	{
+		aux[i] = [-aux[i][0],-aux[i][1],-aux[i][2]]
+	}
+	narray = narray.concat(aux)
+
 	var obj = createObject(varray,earray,narray,color,pos)
 	obj.fanSize = circle1.length 
 	obj.renderFull = function()
