@@ -44,18 +44,23 @@ precision mediump float;
 #define LIG_SPOT 	  	2
 
 uniform vec3 viewLocation;
+const int materialIndex = 1;
 
 varying vec4 Color;
 varying vec3 outNormal;
 varying vec3 vertexPos;
 
-uniform struct Material
+struct Material
 {
 	vec3 ambient;
 	vec3 difuse;
 	vec3 specular;
 	float shininess;
 };
+
+Material materials[2];
+
+
 
 // TODO send light data to GPU
 // do it in a way for having
@@ -97,24 +102,38 @@ vec4 dirLight(LightSource light)
 	vec3 ambient,diffuse,specular;
 
 	//ambient calculation
-	ambient = light.color * light.ambientStr;
+	ambient = materials[materialIndex].ambient * light.color * light.ambientStr;
 
 	//diffuse calculation
 	float diff = max(dot(outNormal,lightPos),0.0);
-	diffuse = 0.5 * light.color * diff;
+	diffuse = materials[materialIndex].difuse * 0.5 * light.color * diff;
 
 	//specular
 	vec3 viewDir = normalize(viewLocation - vertexPos);
 	vec3 reflectedDir = reflect(-lightPos,outNormal);
 	//TODO change this 32 value to the material.shininess
-	float spec = pow(max(dot(viewDir,reflectedDir),0.0),128.0);
-	specular = light.specularStr * light.color * spec;
+	float spec = pow(max(dot(viewDir,reflectedDir),0.0),materials[materialIndex].shininess);
+	specular = materials[materialIndex].specular * light.specularStr * light.color * spec;
 
 	return vec4(ambient + diffuse + specular,1.0);
 }
 
 void main()
 {
+//Materials taken from 
+// http://devernay.free.fr/cours/opengl/materials.html
+//GOLD
+materials[0].ambient 	= vec3(0.24725,0.1995,0.0745);
+materials[0].difuse  	= vec3(0.75164,0.60648,0.22648);
+materials[0].specular	= vec3(0.628281,0.555802,0.366065);
+materials[0].shininess  = 51.2;
+
+//Green Plastic
+materials[1].ambient 	= vec3(0.0,0.0,0.0);
+materials[1].difuse  	= vec3(0.1,0.35,0.1);
+materials[1].specular	= vec3(0.45 ,0.55 ,0.45);
+materials[1].shininess  = 32.0;
+
 	vec4 result = vec4(0.0);
 	//workround for using variable loops
 	//
@@ -132,9 +151,9 @@ void main()
 	//			Color *= spotLight(lights[i]); break;
 	}
 	if(amtOfLights == 0)
-		gl_FragColor = Color;
+		gl_FragColor = vec4(materials[materialIndex].specular,1.0);
 	else
-		gl_FragColor = Color*result;
+		gl_FragColor = result;
 }
 </script>
 
