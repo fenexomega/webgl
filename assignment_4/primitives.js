@@ -18,6 +18,16 @@ function calculeNormals(varray)
 	return narray
 }
 
+function clone(obj) {
+    if (null == obj || "object" != typeof obj) return obj;
+    var copy = obj.constructor();
+    for (var attr in obj) {
+        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+    }
+    return copy;
+}
+//[http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object]
+
 function createFigure(figureId,pos,color,size)
 {
 	switch(figureId)
@@ -182,14 +192,24 @@ function createCylinder(slices,size,color,pos)
 	var circle2 = []
 
 	circle1.push([0,1,0])
+	narray.push([0,1,0])
 	for(var i = 0; i <= 2*Math.PI; i += (2*Math.PI/slices) )
+	{
 		circle1.push([Math.cos(i),1,Math.sin(i)])
+		narray.push([0,1,0])
+	}
 	circle1.push([Math.cos(0),1,Math.sin(0)])
+	narray.push([0,1,0])
 
 	circle2.push([0,-1,0])
+	narray.push([0,-1,0])
 	for(var i = 0; i <= 2*Math.PI; i += 2*Math.PI/slices )
+	{
 		circle2.push([Math.cos(i),-1,Math.sin(i)])
+		narray.push([0,-1,0])
+	}
 	circle2.push([Math.cos(0),-1,Math.sin(0)])
+	narray.push([0,-1,0])
 	
 	varray = varray.concat(circle1,circle2)	
 	for (var i = 0, len = varray.length; i < len; i++) {
@@ -199,27 +219,30 @@ function createCylinder(slices,size,color,pos)
 	
 	for(var i = 0; i <= slices; i++)
 	{
-		earray.push(earray[1+i])
-		earray.push(earray[circle1.length+1+i])
-		earray.push(earray[circle1.length+2+i])
+		varray.push(varray[1+i])
+		varray.push(varray[circle1.length+1+i])
+		varray.push(varray[circle1.length+2+i])
 
-		earray.push(earray[circle1.length+2+i])
-		earray.push(earray[2+i])
-		earray.push(earray[1+i])
+		varray.push(varray[circle1.length+2+i])
+		varray.push(varray[2+i])
+		varray.push(varray[1+i])
 	}
 
+	var circle_vertices = circle1.length*2
+	var	sub_varray = clone(varray).slice(circle_vertices)
+	narray = narray.concat(calculeNormals(sub_varray))
 	var obj = createObject(varray,earray,narray,color,pos)
 	obj.fanSize = circle1.length 
 	obj.renderFull = function()
 	{
-			gl.drawElements(gl.TRIANGLE_FAN,this.fanSize,gl.UNSIGNED_SHORT,0)
-			gl.drawElements(gl.TRIANGLE_FAN,this.fanSize,gl.UNSIGNED_SHORT,this.fanSize*2)
-			gl.drawElements(gl.TRIANGLES,(this.fanSize-1)*6,gl.UNSIGNED_SHORT,this.fanSize*2*2)
+			gl.drawArrays(gl.TRIANGLE_FAN,0,this.fanSize)
+			gl.drawArrays(gl.TRIANGLE_FAN,this.fanSize,this.fanSize)
+			gl.drawArrays(gl.TRIANGLES,this.fanSize*2,this.fanSize*6-6)
 			this.changeColor([0,0,0])
 			this.renderWireframe()
 	}
 	obj.renderWireframe = function(){
-		gl.drawElements(gl.LINE_LOOP,(this.fanSize-1.5)*6,gl.UNSIGNED_SHORT,this.fanSize*2*2)
+//		gl.drawElements(gl.LINE_LOOP,(this.fanSize-1.5)*6,gl.UNSIGNED_SHORT,this.fanSize*2*2)
 
 	}
 	objects.push(obj)
