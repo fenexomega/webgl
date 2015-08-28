@@ -5,7 +5,7 @@ var vertices = []
 var canvas;
 var sliders 
 var objects = []
-var uview,uproj,umodel,ucolor
+var uview,uproj,umodel,ucolor,umaterialIndex
 var view,proj;
 var wireframes = false
 var zValue = 0
@@ -13,12 +13,27 @@ var selectedFigure = 1
 var selectedColor = [0,1,1]
 var rotation_sliders = []
 var scale_slider 
+var selectedMaterial = 0
+/*****/
+var DEBUG = true
 
+function LOG_DEBUG(string)
+{
+	if(DEBUG)
+		console.log("[DEBUG] " + string)
+}
+/*****/
 var figures = {
 	cube: 1,
 	sphere: 2,
 	cone: 3,
 	cylinder: 4
+}
+
+
+function setCheckboxMaterial(object)
+{
+	selectedMaterial = object.selectedIndex	
 }
 
 function clearObjects()
@@ -75,7 +90,6 @@ function initGUI()
 	document.getElementById("distance").value = 0
 	document.getElementById("cbxWireframe").checked = false
 	document.getElementById("div_geochoose").childNodes[3].checked = true
-	document.getElementById("html5colorpicker").value = "#00FFFF"
 }
 
 

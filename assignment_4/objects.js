@@ -42,6 +42,7 @@ function createObject(varray,earray,narray,color,pos)
 		model: m_model,
 		pos: pos,
 		color: color,
+		material: Materials[selectedMaterial],
 		changeColor: function(vec3Color){
 			gl.uniform3fv(ucolor,flatten(vec3Color))
 		},
@@ -51,6 +52,8 @@ function createObject(varray,earray,narray,color,pos)
 		},
 		renderFull: function(){
 		//	gl.drawElements(gl.TRIANGLES,this.size,gl.UNSIGNED_SHORT,0)
+		//	Set material //
+			this.material.sendToShader()
 			gl.drawArrays(gl.TRIANGLES,0,this.vsize)
 			this.changeColor([0,0,0])
 //			this.renderWireframe()
@@ -115,7 +118,10 @@ function createObject(varray,earray,narray,color,pos)
 
 	if(!umodel)
 		umodel = gl.getUniformLocation(program,"model")
+	
+	if(!umaterialIndex)
+		umaterialIndex = gl.getUniformLocation(program,"materialIndex")
 
-	console.log("[DEBUG] Creating object")
+	LOG_DEBUG("Creating object")
 	return obj 
 }
