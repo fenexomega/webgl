@@ -6,13 +6,6 @@
 	position:fixed;
 }
 
-#help_text
-{
-	left: 810px;
-	top: 400px;
-	position: fixed;
-
-}
 
 #div_transform
 {
@@ -20,3 +13,19 @@
 	border-bottom: 1px solid #999;
 }
 
+#lights_div
+{
+
+	border: 1px solid #fff;
+}
+
+#divLightsList
+{
+	left: 110px;
+	top: -100px;
+	height: 200px;
+	width: 250px;
+	border: 1px solid #aaa;
+	position: relative;
+	overflow-y: scroll;
+}

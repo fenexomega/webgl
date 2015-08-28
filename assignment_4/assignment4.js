@@ -30,6 +30,21 @@ var figures = {
 	cylinder: 4
 }
 
+function addLight()
+{
+	var list = document.getElementById("listLights")
+	var element = document.createElement("li")
+	var div = (document.createElement("div"))
+	div.appendChild(document.createElement("input"))
+	div.lastChild.type = "checkbox"
+	div.lastChild.checked = true
+	div.lastChild.value = "1"
+	div.lastChild.onchange = function() {
+		alert(this.value)
+	}
+	element.appendChild(div)
+	list.appendChild(element)
+}
 
 function setCheckboxMaterial(object)
 {

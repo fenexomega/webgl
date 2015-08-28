@@ -200,8 +200,16 @@ Oops ... your browser doesn't support the HTML5 canvas element
 		<input type="radio" name="figure" onclick="selectFigure(figures.sphere);">Sphere</>
 		<input type="radio" name="figure" onclick="selectFigure(figures.cylinder);">Cylinder</>
 		<input type="radio" name="figure" onclick="selectFigure(figures.cone);">Cone</>
-	</div>
 		<button id="btnClear" onclick="clearObjects()"> Clear</button>
+	</div>
+	<div id="lights_div">
+		<h1>Lights</h1>
+		<button id="btnAddLight" onclick="addLight()">Add Light</button>
+		<div id="divLightsList" class="name">
+			<ul id="listLights">
+				
+			</ul>	
+		</div>
 	</div>
 	<div id="help_text">
 		<p>
@@ -209,5 +217,6 @@ Oops ... your browser doesn't support the HTML5 canvas element
 			
 		</p>
 	</div>
+</div>
 </div>
 </body></html>
