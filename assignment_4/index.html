@@ -101,17 +101,17 @@ vec3 pointLightDif(LightSource light)
 	lightPos = light.position;
 	//diffuse calculation
 	vec3 lightDir = normalize(lightPos - vertexPos );
-	float diff = max(dot(outNormal,lightDir),0.0);
+	float diff = max(dot(normalize(outNormal),lightDir),0.0);
 	return Material.difuse * 0.5 * light.color * diff;
 }
 
 vec3 pointLightSpe(LightSource light)
 {
 	
-	vec3 lightDir = normalize(lightPos - vertexPos );
+	vec3 lightDir = normalize( lightPos -  vertexPos );
 	//specular
 	vec3 viewDir = normalize(viewLocation - vertexPos);
-	vec3 reflectedDir = reflect(-lightDir,outNormal);
+	vec3 reflectedDir = reflect(-lightDir,normalize(outNormal));
 	float spec = pow(max(dot(viewDir,reflectedDir),0.0),Material.shininess);
 	return Material.specular  * light.color * spec;
 }
@@ -128,7 +128,7 @@ vec3 dirLightDif(LightSource light)
 
 	//diffuse calculation
 	vec3 lightDir = normalize(-lightPos );
-	float diff = max(dot(outNormal,lightDir),0.0);
+	float diff = max(dot(normalize(outNormal),lightDir),0.0);
 	return Material.difuse * 0.5 * light.color * diff;
 }
 
@@ -138,7 +138,7 @@ vec3 dirLightSpe(LightSource light)
 	vec3 lightDir = normalize(-lightPos );
 
 	vec3 viewDir = normalize(viewLocation - vertexPos);
-	vec3 reflectedDir = reflect(-lightDir,outNormal);
+	vec3 reflectedDir = reflect(-lightDir,normalize(outNormal));
 	float spec = pow(max(dot(viewDir,reflectedDir),0.0),Material.shininess);
 	return Material.specular  * light.color * spec;
 }

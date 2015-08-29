@@ -36,7 +36,7 @@ function addLight()
 	addLightInList(light)
 }
 
-function addLightInList(light)
+function addLightInList(light,object)
 {
 	var list = document.getElementById("listLights")
 	var element = document.createElement("li")
@@ -48,8 +48,16 @@ function addLightInList(light)
 	div.lastChild.checked = true
 	div.lastChild.value = "1"
 	div.lastChild.lightNum = lights.indexOf(light)
+	div.lastChild.object = object
 	div.lastChild.onchange = function() {
 		light.active = this.checked ? 1 : 0
+		if(this.object != undefined)
+		{
+			if(this.checked)
+				this.object.color = [1,1,1]
+			else
+				this.object.color = [0,0,0]
+		}
 	}
 	element.appendChild(div)
 	list.appendChild(element)
@@ -202,7 +210,7 @@ window.onload = function init()
 				lightCube.emmitsLight = true 
 				LOG_DEBUG("I choose a lightcube!")
 				var light =	createLight(lightTypes.POINT,pos,0.2,0.5,[1,1,1])
-				addLightInList(light)
+				addLightInList(light,lightCube)
 
 			}
 			else
