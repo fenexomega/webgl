@@ -55,7 +55,11 @@ function setCheckboxMaterial(object)
 
 function clearObjects()
 {
-	objects = []
+	var aux = []
+	for(var o of objects)
+		if(o.emmitsLight != undefined)
+			aux.push(o)
+	objects = aux
 }
 
 function setWireframe(element)
