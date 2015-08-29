@@ -167,14 +167,14 @@ void main()
 		{
 			amb = max(amb,dirLightAmb(Lights[i]));
 			dif = max(dif,dirLightDif(Lights[i]));
-			spe = max(amb,dirLightSpe(Lights[i]));
+			spe = max(spe,dirLightSpe(Lights[i]));
 			continue;
 		}
 		if(Lights[i].type == LIG_POINT)
 		{
 			amb = max(amb,pointLightAmb(Lights[i]));
 			dif = max(dif,pointLightDif(Lights[i]));
-			spe = max(amb,pointLightSpe(Lights[i]));
+			spe = max(spe,pointLightSpe(Lights[i]));
 			continue;
 		}
 	}
