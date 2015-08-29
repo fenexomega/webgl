@@ -53,14 +53,7 @@ function createObject(varray,earray,narray,color,pos)
 		renderFull: function(){
 		//	gl.drawElements(gl.TRIANGLES,this.size,gl.UNSIGNED_SHORT,0)
 		//	Set material //
-		this.changeColor(this.color)	
-			this.material.sendToShader()
-			if(this.emmitsLight == undefined)
-				gl.uniform1i(uemmitslight,0)
-			else
-				gl.uniform1i(uemmitslight,1)
-
-
+			this.changeColor(this.color)	
 			gl.drawArrays(gl.TRIANGLES,0,this.vsize)
 			this.changeColor([0,0,0])
 //			this.renderWireframe()
@@ -85,6 +78,11 @@ function createObject(varray,earray,narray,color,pos)
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ebo)
 			gl.bindBuffer(gl.ARRAY_BUFFER,this.nbo)
 			gl.vertexAttribPointer(vNormal, 3, gl.FLOAT, false, 0,0)
+			this.material.sendToShader()
+			if(this.emmitsLight == undefined)
+				gl.uniform1i(uemmitslight,0)
+			else
+				gl.uniform1i(uemmitslight,1)
 			if(wireframes)
 			{
 				this.renderWireframe()

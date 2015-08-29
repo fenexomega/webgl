@@ -247,12 +247,9 @@ function createCylinder(slices,size,color,pos)
 	obj.fanSize = circle1.length 
 	obj.renderFull = function()
 	{
-			this.material.sendToShader()
 			gl.drawArrays(gl.TRIANGLE_FAN,0,this.fanSize)
 			gl.drawArrays(gl.TRIANGLE_FAN,this.fanSize,this.fanSize)
 			gl.drawArrays(gl.TRIANGLES,this.fanSize*2,this.fanSize*6-6)
-			this.changeColor([0,0,0])
-			this.renderWireframe()
 	}
 	obj.renderWireframe = function(){
 //		gl.drawElements(gl.LINE_LOOP,(this.fanSize-1.5)*6,gl.UNSIGNED_SHORT,this.fanSize*2*2)
