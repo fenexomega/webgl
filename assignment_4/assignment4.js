@@ -32,20 +32,28 @@ var figures = {
 
 function addLight()
 {
+	var light = createAmbientLight([0,0,-1],0.3,0.6,[1,1,1])
+	addLightInList(light)
+}
+
+function addLightInList(light)
+{
 	var list = document.getElementById("listLights")
 	var element = document.createElement("li")
 	var div = (document.createElement("div"))
+
+	div.innerHTML =  "Light " + lights.indexOf(light)
 	div.appendChild(document.createElement("input"))
 	div.lastChild.type = "checkbox"
 	div.lastChild.checked = true
 	div.lastChild.value = "1"
-	var light = createAmbientLight([0,0,-1],0.3,0.6,[1,1,1])
 	div.lastChild.lightNum = lights.indexOf(light)
 	div.lastChild.onchange = function() {
 		light.active = this.checked ? 1 : 0
 	}
 	element.appendChild(div)
 	list.appendChild(element)
+	return div
 }
 
 function setCheckboxMaterial(object)
@@ -193,7 +201,8 @@ window.onload = function init()
 				var lightCube =	createFigure(figures.cube,pos,[1,1,1],0.05)
 				lightCube.emmitsLight = true 
 				LOG_DEBUG("I choose a lightcube!")
-				createLight(lightTypes.POINT,pos,0.2,0.5,[1,1,1])
+				var light =	createLight(lightTypes.POINT,pos,0.2,0.5,[1,1,1])
+				addLightInList(light)
 
 			}
 			else
