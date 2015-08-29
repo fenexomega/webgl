@@ -140,11 +140,12 @@ vec4 dirLight(LightSource light)
 
 void main()
 {
-	if(emmits_light == 1)
+/*	if(emmits_light == 1)
 	{
 		gl_FragColor = Color;
 		return;
 	}
+*/
 	vec4 result = vec4(0.0);
 	//workround for using variable loops
 	for(int i = 0; i < maxAmtOfLights; ++i)
