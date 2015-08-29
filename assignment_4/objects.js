@@ -53,7 +53,14 @@ function createObject(varray,earray,narray,color,pos)
 		renderFull: function(){
 		//	gl.drawElements(gl.TRIANGLES,this.size,gl.UNSIGNED_SHORT,0)
 		//	Set material //
+		this.changeColor(this.color)	
 			this.material.sendToShader()
+			if(this.emmitsLight == undefined)
+				gl.uniform1i(uemmitslight,0)
+			else
+				gl.uniform1i(uemmitslight,1)
+
+
 			gl.drawArrays(gl.TRIANGLES,0,this.vsize)
 			this.changeColor([0,0,0])
 //			this.renderWireframe()
@@ -121,6 +128,8 @@ function createObject(varray,earray,narray,color,pos)
 	
 	if(!umaterialIndex)
 		umaterialIndex = gl.getUniformLocation(program,"materialIndex")
+
+	uemmitslight = gl.getUniformLocation(program,"emmits_light")
 
 	LOG_DEBUG("Creating object")
 	return obj 

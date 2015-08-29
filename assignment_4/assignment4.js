@@ -106,6 +106,7 @@ function initGUI()
 	rotation_sliders.push(document.getElementById("rotz"))	
 	document.getElementById("distance").value = 0
 	document.getElementById("div_geochoose").childNodes[3].checked = true
+	spotLightRadioButton = document.getElementById("lightOptionSpot")
 }
 
 
@@ -183,7 +184,17 @@ window.onload = function init()
 					zValue];
 			color = selectedColor
 			size = 0.5
-			createFigure(selectedFigure,pos,color,size)
+			if(spotLightRadioButton.checked)
+			{
+				var lightCube =	createFigure(figures.cube,pos,[1,1,1],0.05)
+				lightCube.emmitsLight = true 
+				LOG_DEBUG("I choose a lightcube!")
+				pos[2] = pos[2]-0.95
+				createLight(lightTypes.POINT,pos,0.2,0.5,[1,1,1])
+
+			}
+			else
+				createFigure(selectedFigure,pos,color,size)
 		}
 		canDraw = false
 	})

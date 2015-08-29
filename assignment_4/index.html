@@ -91,7 +91,7 @@ vec4 spotLight(LightSource light)
 
 vec4 pointLight(LightSource light)
 {
-	vec3 lightPos = (light.rotationMatrix*vec4(light.position.xyz,1.0)).xyz;
+	vec3 lightPos = light.position;
 //	vec3 lightPos = -light.position;
 //	lightPos = normalize(lightPos);
 	vec3 ambient,diffuse,specular;
@@ -138,14 +138,16 @@ vec4 dirLight(LightSource light)
 	return vec4(ambient + diffuse + specular,1.0);
 }
 
+uniform int emmits_light;
+
 void main()
 {
-/*	if(emmits_light == 1)
+	if(emmits_light == 1)
 	{
 		gl_FragColor = Color;
 		return;
 	}
-*/
+
 	vec4 result = vec4(0.0);
 	//workround for using variable loops
 	for(int i = 0; i < maxAmtOfLights; ++i)
@@ -157,8 +159,13 @@ void main()
 		if(Lights[i].type == LIG_DIRECTION)
 		{
 			result += dirLight(Lights[i]);
+			continue;
 		}
-//		case LIG_POINT:
+		if(Lights[i].type == LIG_POINT)
+		{
+			result += pointLight(Lights[i]);
+			continue;
+		}
 //			Color *= pointLight(Lights[i]); break;
 //		case LIG_SPOT:
 //			Color *= spotLight(lights[i]); break;
@@ -236,7 +243,7 @@ Oops ... your browser doesn't support the HTML5 canvas element
 		<div>
 			<input type="radio" name="lightOption" id="lightOptionDir" >Directional </input>
 			<br>
-			<input type="radio" name="lightOption" id="lightOptionDir" >PointLight </input>
+			<input type="radio" name="lightOption" id="lightOptionSpot" >PointLight </input>
 			<br>
 			<button id="btnAddLight" onclick="addLight()">Add Light</button>
 		</div>

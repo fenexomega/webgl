@@ -33,16 +33,16 @@ function createFigure(figureId,pos,color,size)
 	switch(figureId)
 	{
 		case figures.cube:
-			createCube(size,color,pos)
+		return	createCube(size,color,pos)
 			break
 		case figures.sphere:
-			createSphere(size,color,pos)
+		return	createSphere(size,color,pos)
 			break
 		case figures.cylinder:
-			createCylinder(slices,size,color,pos)
+		return	createCylinder(slices,size,color,pos)
 			break
 		case figures.cone:
-			createCone(slices,size,color,pos)
+		return	createCone(slices,size,color,pos)
 			break
 			
 
@@ -129,6 +129,8 @@ function createCube(cubeSize,cubeColor,cubePos)
 			gl.drawArrays(gl.LINE_LOOP,i,4)
 	}
 	objects.push(obj)
+
+	return obj
 }
 
 function createSphere(radius,color,pos)
@@ -179,6 +181,7 @@ function createSphere(radius,color,pos)
 	}
 	var obj = createObject(varray,earray,narray,color,pos)
 	objects.push(obj)
+	return obj
 }
 
 function createCylinder(slices,size,color,pos)
@@ -244,6 +247,7 @@ function createCylinder(slices,size,color,pos)
 	obj.fanSize = circle1.length 
 	obj.renderFull = function()
 	{
+			this.material.sendToShader()
 			gl.drawArrays(gl.TRIANGLE_FAN,0,this.fanSize)
 			gl.drawArrays(gl.TRIANGLE_FAN,this.fanSize,this.fanSize)
 			gl.drawArrays(gl.TRIANGLES,this.fanSize*2,this.fanSize*6-6)
@@ -255,6 +259,7 @@ function createCylinder(slices,size,color,pos)
 
 	}
 	objects.push(obj)
+	return obj
 }
 
 function createCone(slices,size,color,pos)
@@ -302,5 +307,6 @@ function createCone(slices,size,color,pos)
 		gl.drawElements(gl.LINE_LOOP,(this.fanSize-2)*3,gl.UNSIGNED_SHORT,(this.fanSize+3)*2)
 	}
 	objects.push(obj)
+	return obj
 }
 
