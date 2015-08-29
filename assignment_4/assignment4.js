@@ -193,7 +193,6 @@ window.onload = function init()
 				var lightCube =	createFigure(figures.cube,pos,[1,1,1],0.05)
 				lightCube.emmitsLight = true 
 				LOG_DEBUG("I choose a lightcube!")
-				pos[2] = pos[2]-0.95
 				createLight(lightTypes.POINT,pos,0.2,0.5,[1,1,1])
 
 			}
