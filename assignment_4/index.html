@@ -70,6 +70,7 @@ uniform int amtOfLights;
 
 struct LightSource
 {
+	int active;
 	int type;
 	float ambientStr;
 	float specularStr;
@@ -77,6 +78,7 @@ struct LightSource
 	vec3 specular;
 	vec3 position;
 	vec3 color;
+	mat4 rotationMatrix;
 };
 
 uniform LightSource Lights[maxAmtOfLights];
@@ -89,41 +91,68 @@ vec4 spotLight(LightSource light)
 
 vec4 pointLight(LightSource light)
 {
-	//TODO
-	return vec4(1.0);
-}
-
-vec4 dirLight(LightSource light)
-{
-		
-	vec3 lightPos = normalize(-light.position);
+	vec3 lightPos = (light.rotationMatrix*vec4(light.position.xyz,1.0)).xyz;
+//	vec3 lightPos = -light.position;
+//	lightPos = normalize(lightPos);
 	vec3 ambient,diffuse,specular;
 
 	//ambient calculation
 	ambient = Material.ambient * light.color * light.ambientStr;
 
 	//diffuse calculation
-	float diff = max(dot(outNormal,lightPos),0.0);
+	vec3 lightDir = normalize(lightPos - vertexPos );
+	float diff = max(dot(outNormal,lightDir),0.0);
 	diffuse = Material.difuse * 0.5 * light.color * diff;
 
 	//specular
 	vec3 viewDir = normalize(viewLocation - vertexPos);
-	vec3 reflectedDir = reflect(-lightPos,outNormal);
+	vec3 reflectedDir = reflect(-lightDir,outNormal);
 	float spec = pow(max(dot(viewDir,reflectedDir),0.0),Material.shininess);
-	specular = Material.specular * light.specularStr * light.color * spec;
+	specular = Material.specular  * light.color * spec;
+
+	return vec4(ambient + diffuse + specular,1.0);
+}
+
+vec4 dirLight(LightSource light)
+{
+		
+	vec3 lightPos = (light.rotationMatrix*vec4(light.position.xyz,1.0)).xyz;
+//	vec3 lightPos = -light.position;
+//	lightPos = normalize(lightPos);
+	vec3 ambient,diffuse,specular;
+
+	//ambient calculation
+	ambient = Material.ambient * light.color * light.ambientStr;
+
+	//diffuse calculation
+	vec3 lightDir = normalize(-lightPos );
+	float diff = max(dot(outNormal,lightDir),0.0);
+	diffuse = Material.difuse * 0.5 * light.color * diff;
+
+	//specular
+	vec3 viewDir = normalize(viewLocation - vertexPos);
+	vec3 reflectedDir = reflect(-lightDir,outNormal);
+	float spec = pow(max(dot(viewDir,reflectedDir),0.0),Material.shininess);
+	specular = Material.specular  * light.color * spec;
 
 	return vec4(ambient + diffuse + specular,1.0);
 }
 
 void main()
 {
+	if(emmits_light == 1)
+	{
+		gl_FragColor = Color;
+		return;
+	}
 	vec4 result = vec4(0.0);
 	//workround for using variable loops
-	//
 	for(int i = 0; i < maxAmtOfLights; ++i)
 	{
 		if(i == amtOfLights)
 			break;
+		if(Lights[i].active == 0)
+			continue;
 		if(Lights[i].type == LIG_DIRECTION)
 		{
 			result += dirLight(Lights[i]);
@@ -179,6 +208,8 @@ Oops ... your browser doesn't support the HTML5 canvas element
 			</div>
 		</div>
 		<div id="etc">
+			Material: <br>
+
 			<select name="materials" id="materials" onchange="setCheckboxMaterial(this)" >
 				<option value="gold">Gold</option>
 				<option value="silver">Silver</option>
@@ -188,8 +219,6 @@ Oops ... your browser doesn't support the HTML5 canvas element
 				<option value="pearl">pearl</option>
 				<option value="ruby">ruby</option>
 			</select>
-			Wireframe 
-			<input type="checkbox" id="cbxWireframe" onclick="setWireframe(this)">
 		</div>
 	</div>
 
@@ -199,12 +228,17 @@ Oops ... your browser doesn't support the HTML5 canvas element
 		<input type="radio" name="figure" onclick="selectFigure(figures.cube);">Cube</>
 		<input type="radio" name="figure" onclick="selectFigure(figures.sphere);">Sphere</>
 		<input type="radio" name="figure" onclick="selectFigure(figures.cylinder);">Cylinder</>
-		<input type="radio" name="figure" onclick="selectFigure(figures.cone);">Cone</>
 		<button id="btnClear" onclick="clearObjects()"> Clear</button>
 	</div>
 	<div id="lights_div">
 		<h1>Lights</h1>
-		<button id="btnAddLight" onclick="addLight()">Add Light</button>
+		<div>
+			<input type="radio" name="lightOption" id="lightOptionDir" >Directional </input>
+			<br>
+			<input type="radio" name="lightOption" id="lightOptionDir" >PointLight </input>
+			<br>
+			<button id="btnAddLight" onclick="addLight()">Add Light</button>
+		</div>
 		<div id="divLightsList" class="name">
 			<ul id="listLights">
 				

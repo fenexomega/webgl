@@ -39,8 +39,10 @@ function addLight()
 	div.lastChild.type = "checkbox"
 	div.lastChild.checked = true
 	div.lastChild.value = "1"
+	var light = createAmbientLight([0,0,-1],0.3,0.6,[1,1,1])
+	div.lastChild.lightNum = lights.indexOf(light)
 	div.lastChild.onchange = function() {
-		alert(this.value)
+		light.active = this.checked ? 1 : 0
 	}
 	element.appendChild(div)
 	list.appendChild(element)
@@ -206,6 +208,8 @@ window.onload = function init()
 
 
 function render() {
+	for(var l of lights)
+		l.update()
     gl.clearColor( backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.0 );
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
 	for(var o of objects)

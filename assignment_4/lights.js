@@ -7,6 +7,7 @@ var lightTypes = {
 }
 
 var structAttribs = [
+	"active",
 	"type",
 	"position",
 	"ambientStr",
@@ -29,14 +30,20 @@ function createLight(iType, v3Position,fAmbientStr,fSpecularStr,v3Color)
 {
 	uAmtOfLights = gl.getUniformLocation(program,"amtOfLights")
 	var light = {
+		active: 1,
 		type: iType,
 		position: v3Position,
 		ambientStr: fAmbientStr,
 		specularStr: fSpecularStr,
 		color: v3Color,
 		index: lights.length,
+		rotationAngle: 0,
 		update: function(){
+			this.rotationAngle++
+			this.rotationMatrix = rotate(this.rotationAngle,[0,1,0])
 			this.index = lights.indexOf(this)
+			var urotationMatrix = gl.getUniformLocation(program,"Lights["+this.index+"].rotationMatrix")
+			gl.uniformMatrix4fv(urotationMatrix,false,flatten(this.rotationMatrix))
 			for(var i = 0; i < structAttribs.length; ++i)
 			{
 				var attrib = structAttribs[i]
@@ -50,7 +57,12 @@ function createLight(iType, v3Position,fAmbientStr,fSpecularStr,v3Color)
 				else
 				{
 					if(light[attrib] != undefined)
-						gl.uniform1f(this.uniformIndex,this[attrib]);
+					{
+						if(attrib === "active" || attrib === "type")
+							gl.uniform1i(this.uniformIndex,this[attrib])
+						else
+							gl.uniform1f(this.uniformIndex,this[attrib]);
+					}
 				}
 
 			}

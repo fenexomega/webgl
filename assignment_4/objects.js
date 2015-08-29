@@ -18,8 +18,8 @@ var camera = {
 		uproj = gl.getUniformLocation(program,"proj")
 		gl.uniformMatrix4fv(uproj,false,flatten(this.proj))
 
-		var uvextexPos = gl.getUniformLocation(program,"vertexPos")
-		gl.uniform3fv(uvextexPos,this.pos)
+		var uvextexPos = gl.getUniformLocation(program,"viewLocation")
+		gl.uniform3fv(uvextexPos,flatten(this.pos))
 	},
 
 	translate: function(x,y,z){
