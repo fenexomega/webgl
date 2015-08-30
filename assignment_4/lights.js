@@ -37,10 +37,11 @@ function createLight(iType, v3Position,fAmbientStr,fSpecularStr,v3Color)
 		color: v3Color,
 		index: lights.length,
 		rotationAngle: 0,
+		rotationDir: [0,1,0],
 		active: 1,
 		update: function(){
 			this.rotationAngle++
-			this.rotationMatrix = rotate(this.rotationAngle,[0,1,0])
+			this.rotationMatrix = rotate(this.rotationAngle,this.rotationDir)
 			this.index = lights.indexOf(this)
 			var urotationMatrix = gl.getUniformLocation(program,"Lights["+this.index+"].rotationMatrix")
 			gl.uniformMatrix4fv(urotationMatrix,false,flatten(this.rotationMatrix))

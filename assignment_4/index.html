@@ -84,6 +84,7 @@ struct LightSource
 uniform LightSource Lights[maxAmtOfLights];
 
 vec3 lightPos;
+float distanceFromLight;
 vec4 spotLight(LightSource light)
 {
 	//TODO
@@ -92,8 +93,9 @@ vec4 spotLight(LightSource light)
 
 vec3 pointLightAmb(LightSource light)
 {
-	
-	return Material.ambient * light.color * light.ambientStr;
+	distanceFromLight = distance(light.position,vertexPos); 
+	return (Material.ambient * light.color * light.ambientStr)
+			/distanceFromLight*distanceFromLight;
 }
 vec3 pointLightDif(LightSource light)
 {
@@ -102,7 +104,8 @@ vec3 pointLightDif(LightSource light)
 	//diffuse calculation
 	vec3 lightDir = normalize(lightPos - vertexPos );
 	float diff = max(dot(normalize(outNormal),lightDir),0.0);
-	return Material.difuse * 0.5 * light.color * diff;
+	return (Material.difuse * 0.5 * light.color * diff)
+			/distanceFromLight*distanceFromLight;
 }
 
 vec3 pointLightSpe(LightSource light)
@@ -113,7 +116,8 @@ vec3 pointLightSpe(LightSource light)
 	vec3 viewDir = normalize(viewLocation - vertexPos);
 	vec3 reflectedDir = reflect(-lightDir,normalize(outNormal));
 	float spec = pow(max(dot(viewDir,reflectedDir),0.0),Material.shininess);
-	return Material.specular  * light.color * spec;
+	return (Material.specular  * light.color * spec)
+			/distanceFromLight*distanceFromLight;
 }
 
 
@@ -249,11 +253,10 @@ Oops ... your browser doesn't support the HTML5 canvas element
 	<div id="lights_div">
 		<h1>Lights</h1>
 		<div>
-			<input type="radio" name="lightOption" id="lightOptionDir" >Directional </input>
 			<br>
-			<input type="radio" name="lightOption" id="lightOptionSpot" >PointLight </input>
+			<input type="radio" name="figure" id="lightOptionSpot" >PointLight </input>
 			<br>
-			<button id="btnAddLight" onclick="addLight()">Add Light</button>
+			<button id="btnAddLight" onclick="addLight()">Add Directional Light</button>
 		</div>
 		<div id="divLightsList" class="name">
 			<ul id="listLights">

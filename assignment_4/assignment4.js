@@ -1,4 +1,4 @@
-var backgroundColor = vec3(0.1,0.1,0.1)
+var backgroundColor = vec3(0.05,0.05,0.05)
 var gl;
 var programNbr;
 var vertices = []
@@ -28,6 +28,25 @@ var figures = {
 	sphere: 2,
 	cone: 3,
 	cylinder: 4
+}
+
+function initScene()
+{
+	var l1 = createLight(0,[0,0,-1],0.5,0.5,[1,1,1])	
+	var l2 = createLight(0,[0,-1,0],0.5,0.5,[1,1,1])	
+	addLightInList(l1)
+	addLightInList(l2)
+	l2.rotationDir = [1,0,0]
+	
+	createFigure(figures.cylinder,[-1.525,-0.9,-1],[1,0,1],0.5)
+	selectedMaterial = 3
+	createFigure(figures.sphere,[1.285,-0.816,-1],[1,0,1],0.5)
+	selectedMaterial = 5
+	createFigure(figures.cylinder,[0.632,0.57,-1],[1,0,1],0.5)
+	selectedMaterial = 6
+	createFigure(figures.sphere,[-0.672,0.373,-0],[1,0,1],0.5)
+	selectedMaterial = 0
+	
 }
 
 function addLight()
@@ -233,6 +252,8 @@ window.onload = function init()
 	camera.pushMatrix()
 
 	render()	
+
+	initScene()
 };
 
 

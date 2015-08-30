@@ -18,15 +18,6 @@ function calculeNormals(varray)
 	return narray
 }
 
-function clone(obj) {
-    if (null == obj || "object" != typeof obj) return obj;
-    var copy = obj.constructor();
-    for (var attr in obj) {
-        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
-    }
-    return copy;
-}
-//[http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object]
 
 function createFigure(figureId,pos,color,size)
 {
@@ -232,15 +223,11 @@ function createCylinder(slices,size,color,pos)
 	}
 
 	var circle_vertices = circle1.length*2
-	var	sub_varray = clone(varray).slice(circle_vertices)
+	var	sub_varray = varray.slice(circle_vertices)
 	//TODO: a bug is happening here. The normals are
 	// inverted. e.g: it should be [0,1,0], but is [0,-1,0]
 	var aux = calculeNormals(sub_varray)
 	
-	for(var i = 0; i < aux.length; ++i)
-	{
-		aux[i] = [-aux[i][0],-aux[i][1],-aux[i][2]]
-	}
 	narray = narray.concat(aux)
 
 	var obj = createObject(varray,earray,narray,color,pos)
