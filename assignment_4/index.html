@@ -93,9 +93,9 @@ vec4 spotLight(LightSource light)
 
 vec3 pointLightAmb(LightSource light)
 {
-	distanceFromLight = distance(light.position,vertexPos); 
+	distanceFromLight = length(light.position - vertexPos); 
 	return (Material.ambient * light.color * light.ambientStr)
-			/distanceFromLight*distanceFromLight;
+			/(distanceFromLight*distanceFromLight);
 }
 vec3 pointLightDif(LightSource light)
 {
@@ -105,7 +105,7 @@ vec3 pointLightDif(LightSource light)
 	vec3 lightDir = normalize(lightPos - vertexPos );
 	float diff = max(dot(normalize(outNormal),lightDir),0.0);
 	return (Material.difuse * 0.5 * light.color * diff)
-			/distanceFromLight*distanceFromLight;
+			/(distanceFromLight*distanceFromLight);
 }
 
 vec3 pointLightSpe(LightSource light)
@@ -117,7 +117,7 @@ vec3 pointLightSpe(LightSource light)
 	vec3 reflectedDir = reflect(-lightDir,normalize(outNormal));
 	float spec = pow(max(dot(viewDir,reflectedDir),0.0),Material.shininess);
 	return (Material.specular  * light.color * spec)
-			/distanceFromLight*distanceFromLight;
+			/(distanceFromLight*distanceFromLight);
 }
 
 
