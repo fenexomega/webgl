@@ -63,6 +63,8 @@ function addLight()
 
 function addLightInList(light,object)
 {
+	if(light == undefined)
+		return undefined
 	var list = document.getElementById("listLights")
 	var element = document.createElement("li")
 	var div = (document.createElement("div"))
@@ -231,8 +233,6 @@ window.onload = function init()
 			size = 0.5
 			if(spotLightRadioButton.checked)
 			{
-				var lightCube =	createFigure(figures.cube,pos,[1,1,1],0.05)
-				lightCube.emmitsLight = true 
 				LOG_DEBUG("I choose a lightcube!")
 				var light =	createLight(lightTypes.POINT,pos,0.2,0.5,[1,1,1])
 				addLightInList(light,lightCube)

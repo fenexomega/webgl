@@ -28,6 +28,11 @@ function createAmbientLight(v3Direction,fAmbientStr,fSpecularStr,v3Color)
 
 function createLight(iType, v3Position,fAmbientStr,fSpecularStr,v3Color)
 {
+	if(lights.length >= 8 )
+	{
+		console.alert("I can't add more than 8. Sorry!")
+		return undefined
+	}
 	uAmtOfLights = gl.getUniformLocation(program,"amtOfLights")
 	if(iType == lightTypes.POINT)
 	{
