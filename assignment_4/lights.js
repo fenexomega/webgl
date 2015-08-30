@@ -34,11 +34,6 @@ function createLight(iType, v3Position,fAmbientStr,fSpecularStr,v3Color)
 		return undefined
 	}
 	uAmtOfLights = gl.getUniformLocation(program,"amtOfLights")
-	if(iType == lightTypes.POINT)
-	{
-		var lightCube =	createFigure(figures.cube,v3Position,[1,1,1],0.05)
-		lightCube.emmitsLight = true 
-	}
 	var light = {
 		type: iType,
 		position: v3Position,
