@@ -34,8 +34,13 @@ function initScene()
 {
 	var l1 = createLight(0,[0,0,-1],0.5,0.5,[1,1,1])	
 	var l2 = createLight(0,[0,-1,0],0.5,0.5,[1,1,1])	
+	var l3 = createLight(1,[-0.15,-0.587,0],0.5,0.5,[1,1,1])	
+	var l4 = createLight(1,[-0.09,0.797,0],0.5,0.5,[1,1,1])	
 	addLightInList(l1)
 	addLightInList(l2)
+	addLightInList(l3)
+	addLightInList(l4)
+
 	l2.rotationDir = [1,0,0]
 	
 	createFigure(figures.cylinder,[-1.525,-0.9,-1],[1,0,1],0.5)
@@ -47,6 +52,7 @@ function initScene()
 	createFigure(figures.sphere,[-0.672,0.373,-0],[1,0,1],0.5)
 	selectedMaterial = 0
 	
+
 }
 
 function addLight()

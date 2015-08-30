@@ -29,6 +29,11 @@ function createAmbientLight(v3Direction,fAmbientStr,fSpecularStr,v3Color)
 function createLight(iType, v3Position,fAmbientStr,fSpecularStr,v3Color)
 {
 	uAmtOfLights = gl.getUniformLocation(program,"amtOfLights")
+	if(iType == lightTypes.POINT)
+	{
+		var lightCube =	createFigure(figures.cube,v3Position,[1,1,1],0.05)
+		lightCube.emmitsLight = true 
+	}
 	var light = {
 		type: iType,
 		position: v3Position,
@@ -53,7 +58,8 @@ function createLight(iType, v3Position,fAmbientStr,fSpecularStr,v3Color)
 				
 				if(Array.isArray(light[attrib]))
 				{
-					gl.uniform3fv(this.uniformIndex,flatten(this[attrib]))
+					gl.uniform3f(this.uniformIndex,this[attrib][0],
+							this[attrib][1],this[attrib][2])
 				}
 				else
 				{
