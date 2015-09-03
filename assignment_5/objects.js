@@ -1,4 +1,4 @@
-var vPosition, vNormal
+var vPosition, vNormal, vTexCoords
 
 var camera = {
 	pos: [0,0,2.5],
@@ -28,7 +28,7 @@ var camera = {
 	}
 }
 
-function createObject(varray,earray,narray,color,pos)
+function createObject(varray,earray,narray,tarray,color,pos)
 {
     // Load the data into the GPU
 	resetGUI()
@@ -47,16 +47,14 @@ function createObject(varray,earray,narray,color,pos)
 			gl.uniform3fv(ucolor,flatten(vec3Color))
 		},
 		renderWireframe: function(){
-				for(var i = 0; i < this.size ; i += 3)
-					gl.drawElements(gl.LINE_LOOP,3,gl.UNSIGNED_SHORT,i*2)
+				for(var i = 0; i < this.vsize ; i += 2)
+					gl.drawArrays(gl.LINE_LOOP,i,2)
 		},
 		renderFull: function(){
-		//	gl.drawElements(gl.TRIANGLES,this.size,gl.UNSIGNED_SHORT,0)
-		//	Set material //
 			this.changeColor(this.color)	
 			gl.drawArrays(gl.TRIANGLE_STRIP,0,this.vsize)
 			this.changeColor([0,0,0])
-//			this.renderWireframe()
+			this.renderWireframe()
 		},
 		transform: function(){
 				this.model = scalem(1.0,1.0,1.0)
@@ -78,6 +76,10 @@ function createObject(varray,earray,narray,color,pos)
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ebo)
 			gl.bindBuffer(gl.ARRAY_BUFFER,this.nbo)
 			gl.vertexAttribPointer(vNormal, 3, gl.FLOAT, false, 0,0)
+			gl.bindBuffer(gl.ARRAY_BUFFER,this.tbo)
+			gl.vertexAttribPointer(vTexCoords, 2, gl.FLOAT, false, 0,0)
+
+			//set Material
 			this.material.sendToShader()
 			if(this.emmitsLight == undefined)
 				gl.uniform1i(uemmitslight,0)
@@ -107,6 +109,10 @@ function createObject(varray,earray,narray,color,pos)
 	gl.bindBuffer(gl.ARRAY_BUFFER, obj.nbo)
 	gl.bufferData(gl.ARRAY_BUFFER,flatten(narray),gl.STATIC_DRAW)
 
+	obj.tbo = gl.createBuffer()
+	gl.bindBuffer(gl.ARRAY_BUFFER, obj.tbo)
+	gl.bufferData(gl.ARRAY_BUFFER,flatten(tarray),gl.STATIC_DRAW)
+
 	gl.bindBuffer(gl.ARRAY_BUFFER,obj.vbo)
 
     if(!vPosition)
@@ -117,6 +123,9 @@ function createObject(varray,earray,narray,color,pos)
 		vNormal = gl.getAttribLocation( program,"vNormal")
 	gl.enableVertexAttribArray(vNormal)
 
+	if(!vTexCoords)
+		vTexCoords = gl.getAttribLocation(program,"vTexCoords")
+	gl.enableVertexAttribArray(vTexCoords)
 
 	if(!ucolor)
 		ucolor = gl.getUniformLocation(program,"uColor")

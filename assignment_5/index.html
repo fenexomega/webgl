@@ -4,12 +4,15 @@
 <script id="vertex-shader" type="x-shader/x-vertex">
 attribute vec4 vPosition;
 attribute vec4 vNormal;
+attribute vec2 vTexCoords;
+
 uniform vec3 uColor; 
 uniform mat4 view,model,proj;
 
 varying vec4 Color;
 varying vec3 outNormal;
 varying vec3 vertexPos;
+varying vec2 outTexCoords;
 
 mat4 transpose(mat4 inMatrix) {
 	 vec4 i0 = inMatrix[0];
@@ -33,6 +36,7 @@ void main()
 	outNormal = normalize(model*vNormal).xyz;
 	vertexPos = vec3(model * vec4(vPosition));
 	gl_Position =  proj*view*model* vPosition;
+	outTexCoords = vTexCoords;
 }
 </script>
 
@@ -171,7 +175,7 @@ void main()
 		{
 			amb = max(amb,dirLightAmb(Lights[i]));
 			dif = max(dif,dirLightDif(Lights[i]));
-	//		spe = max(spe,dirLightSpe(Lights[i]));
+			spe = max(spe,dirLightSpe(Lights[i]));
 			continue;
 		}
 ////	if(Lights[i].type == LIG_POINT)
