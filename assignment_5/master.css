@@ -1,0 +1,31 @@
+#tools
+{
+	left:810px;
+	top: 10px;
+	border: 1px solid #fff;
+	position:fixed;
+}
+
+
+#div_transform
+{
+	margin-left: 50px;
+	border-bottom: 1px solid #999;
+}
+
+#lights_div
+{
+
+	border: 1px solid #fff;
+}
+
+#divLightsList
+{
+	left: 110px;
+	top: -100px;
+	height: 200px;
+	width: 250px;
+	border: 1px solid #aaa;
+	position: relative;
+	overflow-y: scroll;
+}
