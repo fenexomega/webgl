@@ -208,15 +208,10 @@ void main()
 <canvas id="gl-canvas" width="800" height="600">
 Oops ... your browser doesn't support the HTML5 canvas element
 </canvas>
-
 <div id="tools">
 	<div id="div_geoprops">
-		Z-Distance (for the next object): <br>
-		0
-		<input type="range" value="0" min="0" max="15" step="1" onchange="changeDepth(value)" id="distance">
-		15
 		<div id="last_object" class="name">
-			<b>Last Object Modifiers:</b>	
+			<b>Object Modifiers:</b>	
 			<div id="div_transform">
 				Rotation: <br>
 				<b>x</b>: 0<input type="range" value="0" min="0" max="360" step="1" oninput="transformSelectedObject()" id="rotx">360<br>
@@ -225,22 +220,12 @@ Oops ... your browser doesn't support the HTML5 canvas element
 			</div>
 		</div>
 		<div id="etc">
-			Material: <br>
-
+			Texture: <br>
 			<select name="materials" id="materials" onchange="setTexture(this)" >
 				<option value="checkerboard">Checkerboard</option>
 				<option value="earth">Earth</option>
 			</select>
 		</div>
-	</div>
-
-	<div id="div_geochoose">
-		Figure: <br>
-
-		<input type="radio" name="figure" onclick="selectFigure(figures.cube);">Cube</>
-		<input type="radio" name="figure" onclick="selectFigure(figures.sphere);">Sphere</>
-		<input type="radio" name="figure" onclick="selectFigure(figures.cylinder);">Cylinder</>
-		<button id="btnClear" onclick="clearObjects()"> Clear</button>
 	</div>
 </div>
 </body></html>

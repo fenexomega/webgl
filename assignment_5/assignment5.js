@@ -143,9 +143,6 @@ function initGUI()
 	rotation_sliders.push(document.getElementById("rotx"))	
 	rotation_sliders.push(document.getElementById("roty"))	
 	rotation_sliders.push(document.getElementById("rotz"))	
-	document.getElementById("distance").value = 0
-	document.getElementById("div_geochoose").childNodes[3].checked = true
-	spotLightRadioButton = document.getElementById("lightOptionSpot")
 }
 
 
