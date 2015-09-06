@@ -61,7 +61,7 @@ uniform MaterialStruct Material;
 const int maxAmtOfLights = 8;
 uniform int amtOfLights;
 
-uniform sampler2D Tex0;
+uniform sampler2D Tex;
 
 struct LightSource
 {
@@ -182,7 +182,7 @@ void main()
 	if(amtOfLights == 0)
 		gl_FragColor = vec4(Material.specular,1.0);
 	else
-		gl_FragColor = texture2D(Tex0,uv)*vec4(amb+dif+spe,1.0);
+		gl_FragColor = texture2D(Tex,uv)*vec4(amb+dif+spe,1.0);
 }
 </script>
 
@@ -227,14 +227,9 @@ Oops ... your browser doesn't support the HTML5 canvas element
 		<div id="etc">
 			Material: <br>
 
-			<select name="materials" id="materials" onchange="setCheckboxMaterial(this)" >
-				<option value="gold">Gold</option>
-				<option value="silver">Silver</option>
-				<option value="emerald">emerald</option>
-				<option value="jade">jade</option>
-				<option value="obsidian">obsidian</option>
-				<option value="pearl">pearl</option>
-				<option value="ruby">ruby</option>
+			<select name="materials" id="materials" onchange="setTexture(this)" >
+				<option value="checkerboard">Checkerboard</option>
+				<option value="earth">Earth</option>
 			</select>
 		</div>
 	</div>

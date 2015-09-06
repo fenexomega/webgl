@@ -36,8 +36,7 @@ function initScene()
 	
 	selectedMaterial = 0
 	createFigure(figures.sphere,[0,0,0],[1,0,1],0.5)
-	createTextureFromImage("images/earth.png")
-//	createTextureChessboard(256)
+	createTextureChessboard(256)
 
 }
 
@@ -77,9 +76,16 @@ function addLightInList(light,object)
 	return div
 }
 
-function setCheckboxMaterial(object)
+function setTexture(object)
 {
-	selectedMaterial = object.selectedIndex	
+	LOG_DEBUG(object.selectedIndex)
+	switch(object.selectedIndex)
+	{
+	case 0:
+		createTextureChessboard(256); break
+	case 1:
+		createTextureFromImage("images/earth.png"); break;
+	}
 }
 
 function clearObjects()

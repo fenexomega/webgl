@@ -25,14 +25,14 @@ function createTextureChessboard(texSize)
 
 function createTextureFromImage(imgSrc)
 {
-	img = new Image()
+	var	img = new Image()
 	img.onload = function(){ createTexture(img)}
 	img.src = imgSrc
 }
 
 function createTexture(imageData,texSize)
 {
-	texture = gl.createTexture();
+	var texture = gl.createTexture();
     gl.bindTexture( gl.TEXTURE_2D, texture );
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
 	if(texSize)
