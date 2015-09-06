@@ -212,13 +212,21 @@ function createSphere(radius,color,pos)
 		}
 	}
 	//texture coords
-	for(var p of varray)
+	/**/
+ 	for(var p of narray)
 	{
-		p = normalize(p)
 		tarray.push([0.5 + Math.atan2(p[2],p[0])/(2*Math.PI),
 						0.5 - Math.asin(p[1])/Math.PI])
 	
 	}
+	/**/
+	//alternative way
+	/* 
+	for(var n of narray)
+	{
+		tarray.push([n[0]/2 + 0.5,n[1]/2 + 0.5])
+	}
+	/**/
 
 	var obj = createObject(varray,earray,narray,tarray,color,pos)
 	objects.push(obj)

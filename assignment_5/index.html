@@ -11,32 +11,19 @@ uniform mat4 view,model,proj;
 
 varying vec4 Color;
 varying vec3 outNormal;
+varying vec3 outVNormal;
 varying vec3 vertexPos;
 varying vec2 outTexCoords;
 
-mat4 transpose(mat4 inMatrix) {
-	 vec4 i0 = inMatrix[0];
-	 vec4 i1 = inMatrix[1];
-	 vec4 i2 = inMatrix[2];
-	 vec4 i3 = inMatrix[3];
-
-	 mat4 outMatrix = mat4(
-					 vec4(i0.x, i1.x, i2.x, i3.x),
-					 vec4(i0.y, i1.y, i2.y, i3.y),
-					 vec4(i0.z, i1.z, i2.z, i3.z),
-					 vec4(i0.w, i1.w, i2.w, i3.w)
-					 );
-	return outMatrix;
-}
 
 void main()
 {
 	Color = vec4(uColor,1.0);
 	//To transform the normals accordly to the model matrix
 	outNormal = normalize(model*vNormal).xyz;
+	outVNormal = vNormal.xyz;
 	vertexPos = vec3(model * vec4(vPosition));
 	gl_Position =  proj*view*model* vPosition;
-	outTexCoords = vTexCoords;
 }
 </script>
 
@@ -50,7 +37,9 @@ precision mediump float;
 uniform vec3 viewLocation;
 varying vec4 Color;
 varying vec3 outNormal;
+varying vec3 outVNormal;
 varying vec3 vertexPos;
+varying vec2 outTexCoords;
 
 struct MaterialStruct
 {
@@ -71,6 +60,8 @@ uniform MaterialStruct Material;
 // currently amount of lights.
 const int maxAmtOfLights = 8;
 uniform int amtOfLights;
+
+uniform sampler2D Tex0;
 
 struct LightSource
 {
@@ -155,6 +146,8 @@ uniform int emmits_light;
 
 void main()
 {
+	vec2 uv = vec2( 0.5 + atan(outVNormal.z,outVNormal.x)/(2.0*3.1415),
+				0.5 - asin(outVNormal.y)/3.1415);
 	if(emmits_light == 1)
 	{
 		gl_FragColor = Color;
@@ -189,7 +182,7 @@ void main()
 	if(amtOfLights == 0)
 		gl_FragColor = vec4(Material.specular,1.0);
 	else
-		gl_FragColor = vec4(amb+dif+spe,1.0);
+		gl_FragColor = texture2D(Tex0,uv)*vec4(amb+dif+spe,1.0);
 }
 </script>
 
@@ -204,6 +197,7 @@ void main()
 <script src="objects.js" type="text/javascript" charset="utf-8"></script>
 <script src="lights.js" type="text/javascript" charset="utf-8"></script>
 <script src="materials.js" type="text/javascript" charset="utf-8"></script>
+<script src="textures.js" type="text/javascript" charset="utf-8"></script>
 
 
 <link rel="stylesheet" href="../css/stylesheet.css">
