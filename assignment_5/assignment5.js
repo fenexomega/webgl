@@ -36,7 +36,8 @@ function initScene()
 	
 	selectedMaterial = 0
 	createFigure(figures.sphere,[0,0,0],[1,0,1],0.5)
-	createTextureChessboard(256)
+	createTextureFromImage("images/earth.png")
+//	createTextureChessboard(256)
 
 }
 

@@ -29,6 +29,9 @@ function createMaterial(v3amb, v3dif, v3spe, shininess)
 
 // http://devernay.free.fr/cours/opengl/materials.html
 //created Materials
+createMaterial([1,1,1],
+		[1,1,1],
+		[1,1,1],1)
 //GOLD
 createMaterial([0.24725,0.1995,0.0745],
 		[0.75164,0.60648,0.22648],
