@@ -143,11 +143,23 @@ vec3 dirLightSpe(LightSource light)
 }
 
 uniform int emmits_light;
+uniform int uvMappingType;
 
 void main()
 {
-	vec2 uv = vec2( 0.5 + atan(outVNormal.z,outVNormal.x)/(2.0*3.1415),
+	vec2 uv;
+	if(uvMappingType == 0)
+	{
+		uv = vec2( 0.5 + atan(outVNormal.z,outVNormal.x)/(2.0*3.1415),
 				0.5 - asin(outVNormal.y)/3.1415);
+		uv.x = 1.0 - uv.x;
+	}
+	else 
+	{
+		uv = vec2(outVNormal/2.0 + 0.5);
+		uv.y = 1.0 - uv.y;
+	}
+
 	if(emmits_light == 1)
 	{
 		gl_FragColor = Color;
@@ -225,6 +237,15 @@ Oops ... your browser doesn't support the HTML5 canvas element
 				<option value="checkerboard">Checkerboard</option>
 				<option value="earth">Earth</option>
 			</select>
+		</div>
+		<div id="MappingType" class="name">
+			<input type="radio" name="mappingtype" id="mappingtype0" onchange="changeMappingType(0)" />
+			Sphere Mapping
+			<br>
+			
+			<input type="radio" name="mappingtype" id="mappingtype1" onchange="changeMappingType(1)" />
+			Alternative Mapping
+			
 		</div>
 	</div>
 </div>

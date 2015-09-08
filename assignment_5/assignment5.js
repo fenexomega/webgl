@@ -30,6 +30,11 @@ var figures = {
 	cylinder: 4
 }
 
+function changeMappingType(value)
+{
+	gl.uniform1i(gl.getUniformLocation(program,"uvMappingType"),value)
+}
+
 function initScene()
 {
 	var l1 = createLight(0,[0,0,-1],0.5,0.5,[1,1,1])	
@@ -143,6 +148,8 @@ function initGUI()
 	rotation_sliders.push(document.getElementById("rotx"))	
 	rotation_sliders.push(document.getElementById("roty"))	
 	rotation_sliders.push(document.getElementById("rotz"))	
+	document.getElementById("materials").selectedIndex = 0
+	document.getElementById("mappingtype0").checked = true
 }
 
 
